@@ -20,7 +20,7 @@
 		</sql>
 	</uninstall>
 	<administration>
-		<!-- We don't actually present an interface to this package -->
+		<!-- We don't yet present an interface to this package -->
 		<files folder="admin">
 			<filename>index.html</filename>
 			<folder>sql/</folder>

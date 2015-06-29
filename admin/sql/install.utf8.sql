@@ -306,7 +306,7 @@ INSERT INTO `#__pv_elections`
     '' AS `id`,
     `id` AS `old_id`,
     'jos_rt_election_year' AS `old_table`,
-    RIGHT(`e_year`,4) AS `year`,
+    LEFT(`e_year`,4) AS `year`,
     `e_year` AS `name`,
     '' AS `description`,
     0 AS `is_special`,

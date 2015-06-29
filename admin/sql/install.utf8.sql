@@ -1,5 +1,5 @@
 /* tables */
-CREATE TABLE IF NOT EXISTS `jos_pv_addresses` (
+CREATE TABLE IF NOT EXISTS `#__pv_addresses` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `address1` varchar(100) DEFAULT NULL,
   `address2` varchar(100) DEFAULT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `jos_pv_addresses` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `jos_pv_address_to_office` (
+CREATE TABLE IF NOT EXISTS `#__pv_address_to_office` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `address_id` int(10) unsigned NOT NULL DEFAULT '0',
   `office_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `jos_pv_address_to_office` (
   KEY `pv_address_to_office_office_id` (`office_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `jos_pv_address_to_person` (
+CREATE TABLE IF NOT EXISTS `#__pv_address_to_person` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `address_id` int(10) unsigned NOT NULL DEFAULT '0',
   `person_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `jos_pv_address_to_person` (
   KEY `pv_address_to_person_person_id` (`person_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `jos_pv_candidates` (
+CREATE TABLE IF NOT EXISTS `#__pv_candidates` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `office_id` int(10) unsigned NOT NULL DEFAULT '0',
   `party_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `jos_pv_candidates` (
   KEY `pv_candidates_party_id` (`party_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `jos_pv_cycles` (
+CREATE TABLE IF NOT EXISTS `#__pv_cycles` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `description` text NOT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `jos_pv_cycles` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `jos_pv_cycle_to_election` (
+CREATE TABLE IF NOT EXISTS `#__pv_cycle_to_election` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `cycle_id` int(10) unsigned NOT NULL DEFAULT '0',
   `election_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `jos_pv_cycle_to_election` (
   KEY `pv_cycle_to_election_election_id` (`election_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `jos_pv_elections` (
+CREATE TABLE IF NOT EXISTS `#__pv_elections` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `old_id` int(10) unsigned NOT NULL DEFAULT '0',
   `old_table` varchar(255) DEFAULT NULL,
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `jos_pv_elections` (
   KEY `pv_elections_year` (`year`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `jos_pv_links` (
+CREATE TABLE IF NOT EXISTS `#__pv_links` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `type_id` int(10) unsigned NOT NULL DEFAULT '0',
   `order` int(10) unsigned NOT NULL DEFAULT '0',
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `jos_pv_links` (
   KEY `pv_links_type_id` (`type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `jos_pv_link_to_office` (
+CREATE TABLE IF NOT EXISTS `#__pv_link_to_office` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `link_id` int(10) unsigned NOT NULL DEFAULT '0',
   `office_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS `jos_pv_link_to_office` (
   KEY `pv_link_to_office_office_id` (`office_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `jos_pv_link_to_person` (
+CREATE TABLE IF NOT EXISTS `#__pv_link_to_person` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `link_id` int(10) unsigned NOT NULL DEFAULT '0',
   `person_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -143,7 +143,7 @@ CREATE TABLE IF NOT EXISTS `jos_pv_link_to_person` (
   KEY `pv_link_to_person_person_id` (`person_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `jos_pv_link_types` (
+CREATE TABLE IF NOT EXISTS `#__pv_link_types` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `limit` int(10) DEFAULT '0' COMMENT '0 for no limit, 1 or greater for a specific limit',
   `name` varchar(255) DEFAULT NULL,
@@ -158,7 +158,7 @@ CREATE TABLE IF NOT EXISTS `jos_pv_link_types` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `jos_pv_officers` (
+CREATE TABLE IF NOT EXISTS `#__pv_officers` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `office_id` int(10) unsigned NOT NULL DEFAULT '0',
   `party_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -175,7 +175,7 @@ CREATE TABLE IF NOT EXISTS `jos_pv_officers` (
   KEY `pv_officers_election_id` (`election_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `jos_pv_offices` (
+CREATE TABLE IF NOT EXISTS `#__pv_offices` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `term_id` int(10) unsigned NOT NULL DEFAULT '0',
   `old_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -193,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `jos_pv_offices` (
   KEY `pv_offices_term_id` (`term_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `jos_pv_parties` (
+CREATE TABLE IF NOT EXISTS `#__pv_parties` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `abbr` varchar(10) DEFAULT NULL,
@@ -204,7 +204,7 @@ CREATE TABLE IF NOT EXISTS `jos_pv_parties` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `jos_pv_persons` (
+CREATE TABLE IF NOT EXISTS `#__pv_persons` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `old_id` int(10) unsigned NOT NULL DEFAULT '0',
   `old_table` varchar(100) NOT NULL DEFAULT '',
@@ -227,7 +227,7 @@ CREATE TABLE IF NOT EXISTS `jos_pv_persons` (
   KEY `pv_persons_current_party_id` (`current_party_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `jos_pv_reports` (
+CREATE TABLE IF NOT EXISTS `#__pv_reports` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `candidate_id` int(10) unsigned NOT NULL DEFAULT '0',
   `cycle_to_election_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -244,7 +244,7 @@ CREATE TABLE IF NOT EXISTS `jos_pv_reports` (
   KEY `pv_reports_cycle_to_election_id` (`cycle_to_election_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `jos_pv_terms` (
+CREATE TABLE IF NOT EXISTS `#__pv_terms` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `offset` int(10) unsigned NOT NULL DEFAULT '0',
   `length` int(10) unsigned NOT NULL DEFAULT '0',

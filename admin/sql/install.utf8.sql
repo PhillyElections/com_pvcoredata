@@ -415,6 +415,10 @@ INSERT INTO `#__pv_cycle_to_election` VALUES
   ('', 6, @current_election_id, 1, NOW(), NOW()),
   ('', 7, @current_election_id, 1, NOW(), NOW());
 
+/* "Vacant" */
+INSERT INTO `#__pv_persons` VALUES 
+ ('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE `party`='D'), '', '', TRIM('Vacant'), '', '', '', '', '', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW());
+
 INSERT INTO `#__pv_persons`
   SELECT
     '' AS `id`,
@@ -427,7 +431,7 @@ INSERT INTO `#__pv_persons`
     REPLACE(TRIM(`middle_name`),'\.','') AS `middle_name`,
     TRIM(`last_name`) AS `last_name`,
     REPLACE(TRIM(`suffix`),'\.','') as `suffix`,
-    CASE `first_name`
+    CASE TRIM(`first_name`)
       WHEN "Kathleen" THEN "f"
       WHEN "Christine" THEN "f"
       WHEN "Shirley" THEN "f"
@@ -453,12 +457,18 @@ INSERT INTO `#__pv_persons`
     '0000-00-00 00:00:00' AS checked_out_time,
     NOW() AS `created`,
     NOW() AS `updated`
-    FROM `#__electedofficials` group by `id`;
+    FROM `#__electedofficials` 
+    WHERE 
+      TRIM(`first_name`) NOT LIKE "VACANT" AND
+      TRIM(`first_name`) IS NOT NULL AND
+      TRIM(`first_name`) != ''
+    group by `id`;
 
+/* correct some specific existing names */
 UPDATE #__pv_persons
   SET
     `first_name` = LEFT(`first_name`,1),
-    `middle_name` = RIGHT(`middle_name`, LENGTH(`middle_name`)-3)
+    `middle_name` = RIGHT(`first_name`, LENGTH(`first_name`)-3)
   WHERE
     `first_name` IN ('W. Wilson','R. Seth','W. Curtis');
 
@@ -478,3 +488,25 @@ INSERT INTO `#__pv_officers`
       `#__pv_persons` `p` 
     WHERE
       `p`.`old_id` = `o`.`old_id`;
+      
+/*
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `old_id` int(10) unsigned NOT NULL default 0,
+  `old_table` varchar(100) NOT NULL default '',
+  `current_party_id` int(10) unsigned Not NULL default 0,
+  `image` varchar(255) default null,
+  `prefix` varchar(25) default NULL,
+  `first_name` varchar(40) default NULL,
+  `middle_name` varchar(40) default NULL,
+  `last_name` varchar(40) default NULL,
+  `suffix` varchar(25) default NULL,
+  `gender` char(1) default NULL,
+  `marital_status` char(1) default NULL,
+  `bio` text NOT NULL,
+  `published` tinyint(1) unsigned NOT NULL default 0,
+  `checked_out` int(10) NOT NULL default 0,
+  `checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00',
+  `created` datetime NOT NULL default '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL default '0000-00-00 00:00:00',
+*/
+

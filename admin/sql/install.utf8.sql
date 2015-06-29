@@ -71,17 +71,17 @@ CREATE TABLE IF NOT EXISTS `#__pv_cycles` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `#__pv_cycle_to_election` (
+CREATE TABLE IF NOT EXISTS `#__pv_cycle_year` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `cycle_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `election_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `year` int(10) unsigned NOT NULL DEFAULT '0',
   `published` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `pv_cycle_to_election_unique_id` (`cycle_id`,`election_id`),
-  KEY `pv_cycle_to_election_cycle_id` (`cycle_id`),
-  KEY `pv_cycle_to_election_election_id` (`election_id`)
+  UNIQUE KEY `pv_cycle_to_election_unique_id` (`cycle_id`, `year`),
+  KEY `pv_cycle_year_cycle_id` (`cycle_id`),
+  KEY `pv_cycle_year_year` (`year`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `#__pv_elections` (
@@ -306,8 +306,8 @@ INSERT INTO `#__pv_elections`
     '' AS `id`,
     `id` AS `old_id`,
     'jos_rt_election_year' AS `old_table`,
-    LEFT(`e_year`, 4) AS `year`,
-    RIGHT(`e_year`, LENGTH(`e_year`) -4 ) AS `name`,
+    LEFT(TRIM(`e_year`), 4) AS `year`,
+    RIGHT(TRIM(`e_year`), LENGTH(TRIM(`e_year`)) -4 ) AS `name`,
     '' AS `description`,
     0 AS `is_special`,
     1 AS `published`,
@@ -324,7 +324,7 @@ SET @rank=0;
 INSERT INTO `#__pv_offices`
   SELECT
     '' AS `id`,
-    CASE `office`
+    CASE TRIM(`office`)
       WHEN "Attorney General" THEN 2
       WHEN "Auditor General" THEN 2
       WHEN "City Commissioner" THEN 5
@@ -353,7 +353,7 @@ INSERT INTO `#__pv_offices`
    	  'level:',
       `office_level`,
       ';district:',
-      CONCAT_WS('',`congressional_district`,`state_senate_district`,`state_representative_district`,`council_district`),
+      CONCAT_WS('',TRIM(`congressional_district`),TRIM(`state_senate_district`),TRIM(`state_representative_district`),TRIM(`council_district`)),
       ';body:',
       CASE `office` 
         WHEN "U.S. Senate" THEN "senate" 
@@ -387,18 +387,18 @@ INSERT INTO `#__pv_offices`
 SET @current_election_id = LAST_INSERT_ID();
 
 /* there are up to 7 cycles per office in an active election year */
-INSERT INTO `#__pv_cycle_to_election` VALUES
-  ('', 1, @current_election_id, 1, @tnow, @tnow),
-  ('', 2, @current_election_id, 1, @tnow, @tnow),
-  ('', 3, @current_election_id, 1, @tnow, @tnow),
-  ('', 4, @current_election_id, 1, @tnow, @tnow),
-  ('', 5, @current_election_id, 1, @tnow, @tnow),
-  ('', 6, @current_election_id, 1, @tnow, @tnow),
-  ('', 7, @current_election_id, 1, @tnow, @tnow);
+INSERT INTO `#__pv_cycle_year` VALUES
+  ('', 1, 2015, @current_election_id, 1, @tnow, @tnow),
+  ('', 2, 2015, @current_election_id, 1, @tnow, @tnow),
+  ('', 3, 2015, @current_election_id, 1, @tnow, @tnow),
+  ('', 4, 2015, @current_election_id, 1, @tnow, @tnow),
+  ('', 5, 2015, @current_election_id, 1, @tnow, @tnow),
+  ('', 6, 2015, @current_election_id, 1, @tnow, @tnow),
+  ('', 7, 2015, @current_election_id, 1, @tnow, @tnow);
 
 /* "Vacant" person will be id=1*/
 INSERT INTO `#__pv_persons` VALUES 
- ('', 0, '', 1, '', '', TRIM('Vacant'), '', '', '', '', '', '', 1, 0, @tnl, @tnow, @tnow);
+ ('', 0, '', 1, '', '', 'Vacant', '', '', '', '', '', '', 1, 0, @tnl, @tnow, @tnow);
 
 INSERT INTO `#__pv_persons`
   SELECT
@@ -448,8 +448,8 @@ INSERT INTO `#__pv_persons`
 /* correct some specific existing names */
 UPDATE #__pv_persons
   SET
-    `first_name` = LEFT(`first_name`,1),
-    `middle_name` = RIGHT(`first_name`, LENGTH(`first_name`)-3)
+    `first_name` = LEFT(TRIM(`first_name`),1),
+    `middle_name` = RIGHT(TRIM(`first_name`), LENGTH(TRIM(`first_name`))-3)
   WHERE
     `first_name` IN ('W. Wilson','R. Seth','W. Curtis');
 
@@ -488,23 +488,14 @@ INSERT INTO `#__pv_officers`
     TRIM(e.`first_name`) LIKE "VACANT"
 
 /*
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `old_id` int(10) unsigned NOT NULL default 0,
-  `old_table` varchar(100) NOT NULL default '',
-  `current_party_id` int(10) unsigned Not NULL default 0,
-  `image` varchar(255) default null,
-  `prefix` varchar(25) default NULL,
-  `first_name` varchar(40) default NULL,
-  `middle_name` varchar(40) default NULL,
-  `last_name` varchar(40) default NULL,
-  `suffix` varchar(25) default NULL,
-  `gender` char(1) default NULL,
-  `marital_status` char(1) default NULL,
-  `bio` text NOT NULL,
-  `published` tinyint(1) unsigned NOT NULL default 0,
-  `checked_out` int(10) NOT NULL default 0,
-  `checked_out_time` datetime NOT NULL default @tnl,
-  `created` datetime NOT NULL default @tnl,
-  `updated` datetime NOT NULL default @tnl,
+  TODO:
+    
+  Migrate office addresses
+*/
+
+/*
+  TODO:
+    
+  Migrate officers addresses
 */
 

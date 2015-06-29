@@ -24,4 +24,3 @@ DROP TABLE IF EXISTS `#__pv_offices`;
 DROP TABLE IF EXISTS `#__pv_parties`;
 DROP TABLE IF EXISTS `#__pv_terms`;
 DROP TABLE IF EXISTS `#__pv_votes`;
-

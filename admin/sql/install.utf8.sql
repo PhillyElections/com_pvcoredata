@@ -1,270 +1,268 @@
-SET @tnow = NOW();
-SET @tnl  = '0000-00-00 00:00:00';
-SET @tns  = '0000-00-00';
+/* tables */
+CREATE TABLE IF NOT EXISTS `jos_pv_addresses` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `address1` varchar(100) DEFAULT NULL,
+  `address2` varchar(100) DEFAULT NULL,
+  `address3` varchar(100) DEFAULT NULL,
+  `city` varchar(100) DEFAULT NULL,
+  `region` varchar(100) DEFAULT NULL,
+  `postcode` varchar(100) DEFAULT NULL,
+  `published` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `checked_out` int(10) NOT NULL DEFAULT '0',
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-/* xref tables */
-CREATE TABLE IF NOT EXISTS `#__pv_address_to_office`(
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `address_id` int(10) unsigned NOT NULL default 0,
-  `office_id` int(10) unsigned NOT NULL default 0,
-  `order` int(10) unsigned NOT NULL default 0,
-  `created` datetime NOT NULL default '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL default '0000-00-00 00:00:00',
+CREATE TABLE IF NOT EXISTS `jos_pv_address_to_office` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `address_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `office_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `order` int(10) unsigned NOT NULL DEFAULT '0',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `pv_address_to_office_unique_id` (`address_id`, `office_id`),
+  UNIQUE KEY `pv_address_to_office_unique_id` (`address_id`,`office_id`),
   KEY `pv_address_to_office_address_id` (`address_id`),
   KEY `pv_address_to_office_office_id` (`office_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `#__pv_address_to_person`(
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `address_id` int(10) unsigned NOT NULL default 0,
-  `person_id` int(10) unsigned NOT NULL default 0,
-  `order` int(10) unsigned NOT NULL default 0,
-  `created` datetime NOT NULL default '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL default '0000-00-00 00:00:00',
+CREATE TABLE IF NOT EXISTS `jos_pv_address_to_person` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `address_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `person_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `order` int(10) unsigned NOT NULL DEFAULT '0',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `pv_address_to_person_unique_id` (`address_id`, `person_id`),
+  UNIQUE KEY `pv_address_to_person_unique_id` (`address_id`,`person_id`),
   KEY `pv_address_to_person_address_id` (`address_id`),
   KEY `pv_address_to_person_person_id` (`person_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `#__pv_cycle_to_election`(
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `cycle_id` int(10) unsigned NOT NULL default 0,
-  `election_id` int(10) unsigned NOT NULL default 0,
-  `published` tinyint(1) unsigned NOT NULL default 0,
-  `created` datetime NOT NULL default '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL default '0000-00-00 00:00:00',
+CREATE TABLE IF NOT EXISTS `jos_pv_candidates` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `office_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `party_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `person_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `election_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `order` int(10) unsigned NOT NULL DEFAULT '0',
+  `is_incumbent` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `pv_cycle_to_election_unique_id` (`cycle_id`, `election_id`),
-  KEY `pv_cycle_to_election_cycle_id` (`cycle_id`),
-  KEY `pv_cycle_to_election_election_id` (`election_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `#__pv_link_to_office`(
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `link_id` int(10) unsigned NOT NULL default 0,
-  `office_id` int(10) unsigned NOT NULL default 0,
-  `order` int(10) unsigned NOT NULL default 0,
-  `created` datetime NOT NULL default '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `pv_link_to_office_uniqe_id` (`link_id`, `office_id`),
-  KEY `pv_link_to_office_link_id` (`link_id`),
-  KEY `pv_link_to_office_office_id` (`office_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `#__pv_link_to_person`(
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `link_id` int(10) unsigned NOT NULL default 0,
-  `person_id` int(10) unsigned NOT NULL default 0,
-  `order` int(10) unsigned NOT NULL default 0,
-  `created` datetime NOT NULL default '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `pv_link_to_person_unique_id` (`link_id`, `person_id`),
-  KEY `pv_link_to_person_link_id` (`link_id`),
-  KEY `pv_link_to_person_person_id` (`person_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `#__pv_candidates`(
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `office_id` int(10) unsigned NOT NULL default 0,
-  `party_id` int(10) unsigned NOT NULL default 0,
-  `person_id` int(10) unsigned NOT NULL default 0,
-  `election_id` int(10) unsigned NOT NULL default 0,
-  `order` int(10) unsigned NOT NULL default 0,
-  `is_incumbent` tinyint(1) unsigned NOT NULL default 0,
-  `created` datetime NOT NULL default '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `pv_candidates_unique_id` (`office_id`, `person_id`, `party_id`),
+  UNIQUE KEY `pv_candidates_unique_id` (`office_id`,`person_id`,`party_id`),
   KEY `pv_candidates_office_id` (`office_id`),
   KEY `pv_candidates_person_id` (`person_id`),
   KEY `pv_candidates_party_id` (`party_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `#__pv_officers`(
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `office_id` int(10) unsigned NOT NULL default 0,
-  `party_id` int(10) unsigned NOT NULL default 0,
-  `person_id` int(10) unsigned NOT NULL default 0,
-  `election_id` int(10) unsigned NOT NULL default 0,
-  `order` int(10) unsigned NOT NULL default 0,
-  `created` datetime NOT NULL default '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL default '0000-00-00 00:00:00',
+CREATE TABLE IF NOT EXISTS `jos_pv_cycles` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `description` text NOT NULL,
+  `published` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `checked_out` int(10) NOT NULL DEFAULT '0',
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
+
+CREATE TABLE IF NOT EXISTS `jos_pv_cycle_to_election` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `cycle_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `election_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `published` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `pv_officers_uniqe_id` (`office_id`, `person_id`, `party_id`, `election_id`),
+  UNIQUE KEY `pv_cycle_to_election_unique_id` (`cycle_id`,`election_id`),
+  KEY `pv_cycle_to_election_cycle_id` (`cycle_id`),
+  KEY `pv_cycle_to_election_election_id` (`election_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
+
+CREATE TABLE IF NOT EXISTS `jos_pv_elections` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `old_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `old_table` varchar(255) DEFAULT NULL,
+  `year` int(10) unsigned NOT NULL DEFAULT '0',
+  `name` varchar(255) DEFAULT NULL,
+  `description` text NOT NULL,
+  `is_special` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `published` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `is_current` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `date` date NOT NULL DEFAULT '0000-00-00',
+  `checked_out` int(10) NOT NULL DEFAULT '0',
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `pv_elections_year` (`year`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
+
+CREATE TABLE IF NOT EXISTS `jos_pv_links` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `type_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `order` int(10) unsigned NOT NULL DEFAULT '0',
+  `value` varchar(255) DEFAULT NULL,
+  `published` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `checked_out` int(10) NOT NULL DEFAULT '0',
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `pv_links_type_id` (`type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
+CREATE TABLE IF NOT EXISTS `jos_pv_link_to_office` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `link_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `office_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `order` int(10) unsigned NOT NULL DEFAULT '0',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `pv_link_to_office_uniqe_id` (`link_id`,`office_id`),
+  KEY `pv_link_to_office_link_id` (`link_id`),
+  KEY `pv_link_to_office_office_id` (`office_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
+CREATE TABLE IF NOT EXISTS `jos_pv_link_to_person` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `link_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `person_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `order` int(10) unsigned NOT NULL DEFAULT '0',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `pv_link_to_person_unique_id` (`link_id`,`person_id`),
+  KEY `pv_link_to_person_link_id` (`link_id`),
+  KEY `pv_link_to_person_person_id` (`person_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
+CREATE TABLE IF NOT EXISTS `jos_pv_link_types` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `limit` int(10) DEFAULT '0' COMMENT '0 for no limit, 1 or greater for a specific limit',
+  `name` varchar(255) DEFAULT NULL,
+  `symbol` varchar(20) DEFAULT NULL COMMENT 'html code',
+  `glyph` varchar(20) DEFAULT NULL COMMENT 'favicon definition',
+  `image` varchar(255) DEFAULT NULL,
+  `prefer` enum('symbol','glyph','image') DEFAULT 'symbol',
+  `checked_out` int(10) NOT NULL DEFAULT '0',
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
+
+CREATE TABLE IF NOT EXISTS `jos_pv_officers` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `office_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `party_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `person_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `election_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `order` int(10) unsigned NOT NULL DEFAULT '0',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `pv_officers_uniqe_id` (`office_id`,`person_id`,`party_id`,`election_id`),
   KEY `pv_officers_office_id` (`office_id`),
   KEY `pv_officers_person_id` (`person_id`),
   KEY `pv_officers_party_id` (`party_id`),
   KEY `pv_officers_election_id` (`election_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
-/* entity tables */
-CREATE TABLE IF NOT EXISTS `#__pv_addresses`(
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `address1` varchar(100) default NULL,
-  `address2` varchar(100) default NULL,
-  `address3` varchar(100) default NULL,
-  `city` varchar(100) default NULL,
-  `region` varchar(100) default NULL,
-  `postcode` varchar(100) default NULL,
-  `published` tinyint(1) unsigned NOT NULL default 0,
-  `checked_out` int(10) NOT NULL default 0,
-  `checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00',
-  `created` datetime NOT NULL default '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `#__pv_cycles`(
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `name` varchar(255) default NULL,
-  `description` text NOT NULL,
-  `published` tinyint(1) unsigned NOT NULL default 0,
-  `date` datetime NOT NULL default '0000-00-00 00:00:00',
-  `checked_out` int(10) NOT NULL default 0,
-  `checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00',
-  `created` datetime NOT NULL default '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `#__pv_elections`(
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `old_id` int(10) unsigned NOT NULL default 0,
-  `old_table` varchar(255) default NULL,
-  `year` int(10) unsigned NOT NULL default 0,
-  `name` varchar(255) default NULL,
-  `description` text NOT NULL,
-  `is_special` tinyint(1) unsigned NOT NULL default 0,
-  `published` tinyint(1) unsigned NOT NULL default 0,
-  `is_current` tinyint(1) unsigned NOT NULL default 0,
-  `date` date NOT NULL default '0000-00-00',
-  `checked_out` int(10) NOT NULL default 0,
-  `checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00',
-  `created` datetime NOT NULL default '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `pv_elections_year` (`year`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE IF NOT EXISTS `#__pv_link_types`(
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `limit` int(10) default 0 COMMENT '0 for no limit, 1 or greater for a specific limit',
-  `name` varchar(255) default NULL,
-  `symbol` varchar(20) default NULL COMMENT 'html code',
-  `glyph` varchar(20) default NULL COMMENT 'favicon definition',
-  `image` varchar(255) default NULL,
-  `prefer` enum('symbol', 'glyph', 'image') default 'symbol',
-  `checked_out` int(10) NOT NULL default 0,
-  `checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00',
-  `created` datetime NOT NULL default '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `#__pv_links`(
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `type_id` int(10) unsigned NOT NULL default 0,
-  `order` int(10) unsigned NOT NULL default 0,
-  `value` varchar(255) default NULL,
-  `published` tinyint(1) unsigned NOT NULL default 0,
-  `checked_out` int(10) NOT NULL default 0,
-  `checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00',
-  `created` datetime NOT NULL default '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `pv_links_type_id` (`type_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `#__pv_offices`(
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `term_id` int(10) unsigned NOT NULL default 0,
-  `old_id` int(10) unsigned NOT NULL default 0,
-  `old_table` varchar(100) NOT NULL default '',
-  `order` int(10) unsigned NOT NULL default 0,
-  `name` varchar(255) NOT NULL default '',
+CREATE TABLE IF NOT EXISTS `jos_pv_offices` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `term_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `old_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `old_table` varchar(100) NOT NULL DEFAULT '',
+  `order` int(10) unsigned NOT NULL DEFAULT '0',
+  `name` varchar(255) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `attributes` text NOT NULL,
-  `published` tinyint(1) unsigned NOT NULL default 0,
-  `checked_out` int(10) NOT NULL default 0,
-  `checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00',
-  `created` datetime NOT NULL default '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL default '0000-00-00 00:00:00',
+  `published` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `checked_out` int(10) NOT NULL DEFAULT '0',
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `pv_offices_term_id` (`term_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE if NOT EXISTS `#__pv_parties`(
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `name` varchar(255) default NULL,
-  `abbr` varchar(10) default NULL,
-  `checked_out` int(10) NOT NULL default 0,
-  `checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00',
-  `created` datetime NOT NULL default '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL default '0000-00-00 00:00:00',
+CREATE TABLE IF NOT EXISTS `jos_pv_parties` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `abbr` varchar(10) DEFAULT NULL,
+  `checked_out` int(10) NOT NULL DEFAULT '0',
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `#__pv_persons`(
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `old_id` int(10) unsigned NOT NULL default 0,
-  `old_table` varchar(100) NOT NULL default '',
-  `current_party_id` int(10) unsigned Not NULL default 0,
-  `image` varchar(255) default null,
-  `prefix` varchar(25) default NULL,
-  `first_name` varchar(40) default NULL,
-  `middle_name` varchar(40) default NULL,
-  `last_name` varchar(40) default NULL,
-  `suffix` varchar(25) default NULL,
-  `gender` char(1) default NULL,
-  `marital_status` char(1) default NULL,
+CREATE TABLE IF NOT EXISTS `jos_pv_persons` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `old_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `old_table` varchar(100) NOT NULL DEFAULT '',
+  `current_party_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `image` varchar(255) DEFAULT NULL,
+  `prefix` varchar(25) DEFAULT NULL,
+  `first_name` varchar(40) DEFAULT NULL,
+  `middle_name` varchar(40) DEFAULT NULL,
+  `last_name` varchar(40) DEFAULT NULL,
+  `suffix` varchar(25) DEFAULT NULL,
+  `gender` char(1) DEFAULT NULL,
+  `marital_status` char(1) DEFAULT NULL,
   `bio` text NOT NULL,
-  `published` tinyint(1) unsigned NOT NULL default 0,
-  `checked_out` int(10) NOT NULL default 0,
-  `checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00',
-  `created` datetime NOT NULL default '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL default '0000-00-00 00:00:00',
+  `published` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `checked_out` int(10) NOT NULL DEFAULT '0',
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `pv_persons_current_party_id` (`current_party_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `#__pv_reports`(
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `candidate_id` int(10) unsigned NOT NULL default 0,
-  `cycle_to_election_id` int(10) unsigned NOT NULL default 0,
-  `name` varchar(255) default NULL,
-  `filename` varchar(255) default NULL,
-  `published` tinyint(1) unsigned NOT NULL default 0,
-  `checked_out` int(10) NOT NULL default 0,
-  `checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00',
-  `created` datetime NOT NULL default '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL default '0000-00-00 00:00:00',
+CREATE TABLE IF NOT EXISTS `jos_pv_reports` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `candidate_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `cycle_to_election_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `name` varchar(255) DEFAULT NULL,
+  `filename` varchar(255) DEFAULT NULL,
+  `published` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `checked_out` int(10) NOT NULL DEFAULT '0',
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `pv_reports_unique_id` (`candidate_id`, `cycle_to_election_id`),
+  UNIQUE KEY `pv_reports_unique_id` (`candidate_id`,`cycle_to_election_id`),
   KEY `pv_reports_candidate_id` (`candidate_id`),
   KEY `pv_reports_cycle_to_election_id` (`cycle_to_election_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE IF NOT EXISTS `#__pv_terms`(
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `offset` int(10) unsigned NOT NULL default 0,
-  `length` int(10) unsigned NOT NULL default 0,
-  `name` varchar(255) default NULL,
-  `published` tinyint(1) unsigned NOT NULL default 0,
-  `checked_out` int(10) NOT NULL default 0,
-  `checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00',
-  `created` datetime NOT NULL default '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL default '0000-00-00 00:00:00',
+CREATE TABLE IF NOT EXISTS `jos_pv_terms` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `offset` int(10) unsigned NOT NULL DEFAULT '0',
+  `length` int(10) unsigned NOT NULL DEFAULT '0',
+  `name` varchar(255) DEFAULT NULL,
+  `published` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `checked_out` int(10) NOT NULL DEFAULT '0',
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
+/* constants */
+SET @tnow = NOW();
+SET @tnl  = '0000-00-00 00:00:00';
+SET @tns  = '0000-00-00';
 
-/* insert data */
+/* data */
 INSERT INTO `#__pv_terms` VALUES
   ('', 0, 2, '2-year, no offset', 1, 0, @tnl, @tnow, @tnow),
   ('', 0, 6, '4-year, no offset', 1, 0, @tnl, @tnow, @tnow),
@@ -321,36 +319,6 @@ INSERT INTO `#__pv_elections`
     @tnow AS `updated`
   FROM `#__rt_election_year`
   ORDER BY `election_date` ASC;
-
-/*
-Federal	President of the United States	2008	2016	4
-federal	U.S. Representative	2014	2018	4
-federal	U.S. Senate	2010	2018	6	class 1
-federal U.S. Senate 1234    1234	6	class 3
-state	State Representative	2015	2014
-state	State Senator	2015	2016
-state	State Treasurer	2008	2016
-state	Governor	2014	2018
-state	Lieutenant Governor	2014	2018
-state	Attorney General	2012	2016
-state	Auditor General	2012	2016
-local	City Commissioner	2011	2015
-local	Mayor	2007	2015
-local	City Council	2011	2015
-local	City Council At-Large	2014	2015
-local	Register of Wills	1979	2015
-local	Sheriff	2011	2015
-local	City Controller	2005	2013
-local	District Attorney	2009	2013
-
-    1 - 2-yr us reps, state reps
-    2 - 4-yr presidential, state senate odd, state treasurer, state atty,state auditor
-    3 - 4-yr+1 city controller, city DA,
-    4 - 4-yr+2 state senate even, governor, lietenant governor
-    5 - 4-yr+3 city comms, city council (all), mayor, register of wills, sheriff
-    6 - 6-year us senate class 1
-    7 - 6-year+4 us senate class 3
-*/
 
 SET @rank=0;
 INSERT INTO `#__pv_offices`
@@ -428,7 +396,7 @@ INSERT INTO `#__pv_cycle_to_election` VALUES
   ('', 6, @current_election_id, 1, @tnow, @tnow),
   ('', 7, @current_election_id, 1, @tnow, @tnow);
 
-/* "Vacant" */
+/* "Vacant" person will be id=1*/
 INSERT INTO `#__pv_persons` VALUES 
  ('', 0, '', 1, '', '', TRIM('Vacant'), '', '', '', '', '', '', 1, 0, @tnl, @tnow, @tnow);
 

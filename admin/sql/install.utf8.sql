@@ -1,3 +1,7 @@
+SET @tnow = NOW();
+SET @tnl  = '0000-00-00 00:00:00';
+SET @tns  = '0000-00-00';
+
 /* xref tables */
 CREATE TABLE IF NOT EXISTS `#__pv_address_to_office`(
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -7,7 +11,9 @@ CREATE TABLE IF NOT EXISTS `#__pv_address_to_office`(
   `created` datetime NOT NULL default '0000-00-00 00:00:00',
   `updated` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `pv_address_to_office_fks_id` (`address_id`, `office_id`)
+  UNIQUE KEY `pv_address_to_office_unique_id` (`address_id`, `office_id`),
+  KEY `pv_address_to_office_address_id` (`address_id`),
+  KEY `pv_address_to_office_office_id` (`office_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_address_to_person`(
@@ -18,7 +24,9 @@ CREATE TABLE IF NOT EXISTS `#__pv_address_to_person`(
   `created` datetime NOT NULL default '0000-00-00 00:00:00',
   `updated` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `pv_address_to_person_fks_id` (`address_id`, `person_id`)
+  UNIQUE KEY `pv_address_to_person_unique_id` (`address_id`, `person_id`),
+  KEY `pv_address_to_person_address_id` (`address_id`),
+  KEY `pv_address_to_person_person_id` (`person_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_cycle_to_election`(
@@ -29,7 +37,9 @@ CREATE TABLE IF NOT EXISTS `#__pv_cycle_to_election`(
   `created` datetime NOT NULL default '0000-00-00 00:00:00',
   `updated` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `pv_cycle_to_election_fks_id` (`cycle_id`, `election_id`)
+  UNIQUE KEY `pv_cycle_to_election_unique_id` (`cycle_id`, `election_id`),
+  KEY `pv_cycle_to_election_cycle_id` (`cycle_id`),
+  KEY `pv_cycle_to_election_election_id` (`election_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_link_to_office`(
@@ -40,7 +50,9 @@ CREATE TABLE IF NOT EXISTS `#__pv_link_to_office`(
   `created` datetime NOT NULL default '0000-00-00 00:00:00',
   `updated` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `pv_link_to_office_fks_id` (`link_id`, `office_id`)
+  UNIQUE KEY `pv_link_to_office_uniqe_id` (`link_id`, `office_id`),
+  KEY `pv_link_to_office_link_id` (`link_id`),
+  KEY `pv_link_to_office_office_id` (`office_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_link_to_person`(
@@ -51,7 +63,9 @@ CREATE TABLE IF NOT EXISTS `#__pv_link_to_person`(
   `created` datetime NOT NULL default '0000-00-00 00:00:00',
   `updated` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `pv_link_to_person_fks_id` (`link_id`, `person_id`)
+  UNIQUE KEY `pv_link_to_person_unique_id` (`link_id`, `person_id`),
+  KEY `pv_link_to_person_link_id` (`link_id`),
+  KEY `pv_link_to_person_person_id` (`person_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_candidates`(
@@ -65,7 +79,10 @@ CREATE TABLE IF NOT EXISTS `#__pv_candidates`(
   `created` datetime NOT NULL default '0000-00-00 00:00:00',
   `updated` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `pv_candidates_fks_id` (`office_id`, `person_id`, `party_id`)
+  UNIQUE KEY `pv_candidates_unique_id` (`office_id`, `person_id`, `party_id`),
+  KEY `pv_candidates_office_id` (`office_id`),
+  KEY `pv_candidates_person_id` (`person_id`),
+  KEY `pv_candidates_party_id` (`party_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_officers`(
@@ -78,7 +95,11 @@ CREATE TABLE IF NOT EXISTS `#__pv_officers`(
   `created` datetime NOT NULL default '0000-00-00 00:00:00',
   `updated` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `pv_officers_fks_id` (`office_id`, `person_id`, `party_id`, `election_id`)
+  UNIQUE KEY `pv_officers_uniqe_id` (`office_id`, `person_id`, `party_id`, `election_id`),
+  KEY `pv_officers_office_id` (`office_id`),
+  KEY `pv_officers_person_id` (`person_id`),
+  KEY `pv_officers_party_id` (`party_id`),
+  KEY `pv_officers_election_id` (`election_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 /* entity tables */
@@ -115,6 +136,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_elections`(
   `id` int(10) unsigned NOT NULL auto_increment,
   `old_id` int(10) unsigned NOT NULL default 0,
   `old_table` varchar(255) default NULL,
+  `year` int(10) unsigned NOT NULL default 0,
   `name` varchar(255) default NULL,
   `description` text NOT NULL,
   `is_special` tinyint(1) unsigned NOT NULL default 0,
@@ -125,8 +147,10 @@ CREATE TABLE IF NOT EXISTS `#__pv_elections`(
   `checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00',
   `created` datetime NOT NULL default '0000-00-00 00:00:00',
   `updated` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `pv_elections_year` (`year`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
 
 CREATE TABLE IF NOT EXISTS `#__pv_link_types`(
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -153,7 +177,8 @@ CREATE TABLE IF NOT EXISTS `#__pv_links`(
   `checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00',
   `created` datetime NOT NULL default '0000-00-00 00:00:00',
   `updated` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `pv_links_type_id` (`type_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_offices`(
@@ -171,7 +196,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_offices`(
   `created` datetime NOT NULL default '0000-00-00 00:00:00',
   `updated` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `pv_offices_fks_id` (`term_id`)
+  KEY `pv_offices_term_id` (`term_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 CREATE TABLE if NOT EXISTS `#__pv_parties`(
@@ -204,7 +229,8 @@ CREATE TABLE IF NOT EXISTS `#__pv_persons`(
   `checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00',
   `created` datetime NOT NULL default '0000-00-00 00:00:00',
   `updated` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `pv_persons_current_party_id` (`current_party_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_reports`(
@@ -219,7 +245,9 @@ CREATE TABLE IF NOT EXISTS `#__pv_reports`(
   `created` datetime NOT NULL default '0000-00-00 00:00:00',
   `updated` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `coe_id` (`candidate_id`, `cycle_to_election_id`)
+  UNIQUE KEY `pv_reports_unique_id` (`candidate_id`, `cycle_to_election_id`),
+  KEY `pv_reports_candidate_id` (`candidate_id`),
+  KEY `pv_reports_cycle_to_election_id` (`cycle_to_election_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_terms`(
@@ -235,49 +263,52 @@ CREATE TABLE IF NOT EXISTS `#__pv_terms`(
   PRIMARY KEY (`id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
+
 /* insert data */
 INSERT INTO `#__pv_terms` VALUES
-  ('', 0, 2, '2-year, no offset', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 0, 6, '4-year, no offset', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 1, 4, '4-year, 1year offset', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 2, 4, '4-year, 2year offset', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 3, 4, '4-year, 3year offset', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 0, 6, '6-year, no offset', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 4, 6, '6-year, 4year offset', 1, 0, '0000-00-00 00:00:00', NOW(), NOW());
+  ('', 0, 2, '2-year, no offset', 1, 0, @tnl, @tnow, @tnow),
+  ('', 0, 6, '4-year, no offset', 1, 0, @tnl, @tnow, @tnow),
+  ('', 1, 4, '4-year, 1year offset', 1, 0, @tnl, @tnow, @tnow),
+  ('', 2, 4, '4-year, 2year offset', 1, 0, @tnl, @tnow, @tnow),
+  ('', 3, 4, '4-year, 3year offset', 1, 0, @tnl, @tnow, @tnow),
+  ('', 0, 6, '6-year, no offset', 1, 0, @tnl, @tnow, @tnow),
+  ('', 4, 6, '6-year, 4year offset', 1, 0, @tnl, @tnow, @tnow);
 
 INSERT INTO `#__pv_parties` VALUES
-  ('', 'Democratic', 'Dem', '', '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 'Republican', 'Rep', '', '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 'Libertarian', 'Lib', '', '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 'Green', 'Gre', '', '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 'Constitution', 'Con', '', '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 'Justice', 'Jus', '', '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 'Socialization & Liberation', 'Lib', '', '0000-00-00 00:00:00', NOW(), NOW());
+  ('', 'None', 'None', '', @tnl, @tnow, @tnow),
+  ('', 'Democratic', 'Dem', '', @tnl, @tnow, @tnow),
+  ('', 'Republican', 'Rep', '', @tnl, @tnow, @tnow),
+  ('', 'Libertarian', 'Lib', '', @tnl, @tnow, @tnow),
+  ('', 'Green', 'Gre', '', @tnl, @tnow, @tnow),
+  ('', 'Constitution', 'Con', '', @tnl, @tnow, @tnow),
+  ('', 'Justice', 'Jus', '', @tnl, @tnow, @tnow),
+  ('', 'Socialization & Liberation', 'Lib', '', @tnl, @tnow, @tnow);
 
 INSERT INTO `#__pv_link_types` VALUES
-  ('', 3,'phone','','','','symbol', '', '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 1,'cell','','','','symbol', '', '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 1,'fax','','','','symbol', '', '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 1,'email','','','','symbol', '', '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 1,'homepage','','','','symbol', '', '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 1,'twitter','','','','symbol', '', '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 1,'facebook','','','','symbol', '', '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 1,'linkdin','','','','symbol', '', '0000-00-00 00:00:00', NOW(), NOW());
+  ('', 3,'phone','','','','symbol', '', @tnl, @tnow, @tnow),
+  ('', 1,'cell','','','','symbol', '', @tnl, @tnow, @tnow),
+  ('', 1,'fax','','','','symbol', '', @tnl, @tnow, @tnow),
+  ('', 1,'email','','','','symbol', '', @tnl, @tnow, @tnow),
+  ('', 1,'homepage','','','','symbol', '', @tnl, @tnow, @tnow),
+  ('', 1,'twitter','','','','symbol', '', @tnl, @tnow, @tnow),
+  ('', 1,'facebook','','','','symbol', '', @tnl, @tnow, @tnow),
+  ('', 1,'linkdin','','','','symbol', '', @tnl, @tnow, @tnow);
 
 INSERT INTO `#__pv_cycles` values
-  ('', 1, 'First Cycle', '', 1, '', '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 2, 'Second Cycle', '', 2, '', '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 3, 'Third Cycle', '', 3, '', '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 4, 'Fourth Cycle', '', 4, '', '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 5, 'Fifth Cycle', '', 5, '', '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 6, 'Sixth Cycle', '', 6, '', '0000-00-00 00:00:00', NOW(), NOW()),
-  ('', 7, 'Seventh Cycle', '', 7, '', '0000-00-00 00:00:00', NOW(), NOW());
+  ('', 1, 'First Cycle', '', 1, '', @tnl, @tnow, @tnow),
+  ('', 2, 'Second Cycle', '', 2, '', @tnl, @tnow, @tnow),
+  ('', 3, 'Third Cycle', '', 3, '', @tnl, @tnow, @tnow),
+  ('', 4, 'Fourth Cycle', '', 4, '', @tnl, @tnow, @tnow),
+  ('', 5, 'Fifth Cycle', '', 5, '', @tnl, @tnow, @tnow),
+  ('', 6, 'Sixth Cycle', '', 6, '', @tnl, @tnow, @tnow),
+  ('', 7, 'Seventh Cycle', '', 7, '', @tnl, @tnow, @tnow);
 
 INSERT INTO `#__pv_elections`
   SELECT
     '' AS `id`,
     `id` AS `old_id`,
     'jos_rt_election_year' AS `old_table`,
+    RIGHT(`e_year`,4) AS `year`,
     `e_year` AS `name`,
     '' AS `description`,
     0 AS `is_special`,
@@ -285,28 +316,10 @@ INSERT INTO `#__pv_elections`
     0 AS `is_current`,
     `election_date` AS `date`,
     0 AS `checked_out`,
-    '0000-00-00 00:00:00' AS `checked_out_time`,
-    NOW() AS `created`,
-    NOW() AS `updated`
+    @tnl AS `checked_out_time`,
+    @tnow AS `created`,
+    @tnow AS `updated`
   FROM `#__rt_election_year`
-  ORDER BY `election_date` ASC;
-
-INSERT INTO `#__pv_elections`
-  SELECT
-    '' AS `id`,
-    `id` AS `old_id`,
-    'jos_rt_election' AS `old_table`,
-    `name` AS `name`,
-    '' AS `description`,
-    `special_election` AS `is_special`,
-    1 AS `published`,
-    0 AS `is_current`,
-    `election_date` AS `date`,
-    0 AS `checked_out`,
-    '0000-00-00 00:00:00' AS `checked_out_time`,
-    NOW() AS `created`,
-    NOW() AS `updated`
-  FROM `#__rt_election`
   ORDER BY `election_date` ASC;
 
 /*
@@ -362,7 +375,7 @@ INSERT INTO `#__pv_offices`
       WHEN "State Treasurer" THEN 2
       WHEN "U.S. Representative" THEN 1
       WHEN "U.S. Senate" THEN IF(`next_election` % 3, 7, 6)
-    end as term_id,
+    END AS term_id,
     `id` AS `old_id`,
     'jos_electedofficials' AS `old_table`,
     @rank:=@rank+1 AS `order`,
@@ -393,44 +406,44 @@ INSERT INTO `#__pv_offices`
         WHEN "City Council" THEN "council" 
         WHEN "City Council At-Large" THEN "council" 
         WHEN "President of the United States" THEN "executive" 
-      end,
+      END,
       ';'
     ) AS `attributes`,
     1 AS `published`,
     0 AS `checked_out`,
-    '0000-00-00 00:00:00' AS checked_out_time,
-    NOW() AS `created`,
-    NOW() AS `updated`
+    @tnl AS checked_out_time,
+    @tnow AS `created`,
+    @tnow AS `updated`
     FROM `#__electedofficials` group by `id`;
 
 SET @current_election_id = LAST_INSERT_ID();
 
 /* there are up to 7 cycles per office in an active election year */
 INSERT INTO `#__pv_cycle_to_election` VALUES
-  ('', 1, @current_election_id, 1, NOW(), NOW()),
-  ('', 2, @current_election_id, 1, NOW(), NOW()),
-  ('', 3, @current_election_id, 1, NOW(), NOW()),
-  ('', 4, @current_election_id, 1, NOW(), NOW()),
-  ('', 5, @current_election_id, 1, NOW(), NOW()),
-  ('', 6, @current_election_id, 1, NOW(), NOW()),
-  ('', 7, @current_election_id, 1, NOW(), NOW());
+  ('', 1, @current_election_id, 1, @tnow, @tnow),
+  ('', 2, @current_election_id, 1, @tnow, @tnow),
+  ('', 3, @current_election_id, 1, @tnow, @tnow),
+  ('', 4, @current_election_id, 1, @tnow, @tnow),
+  ('', 5, @current_election_id, 1, @tnow, @tnow),
+  ('', 6, @current_election_id, 1, @tnow, @tnow),
+  ('', 7, @current_election_id, 1, @tnow, @tnow);
 
 /* "Vacant" */
 INSERT INTO `#__pv_persons` VALUES 
- ('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE `party`='D'), '', '', TRIM('Vacant'), '', '', '', '', '', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW());
+ ('', 0, '', 1, '', '', TRIM('Vacant'), '', '', '', '', '', '', 1, 0, @tnl, @tnow, @tnow);
 
 INSERT INTO `#__pv_persons`
   SELECT
     '' AS `id`,
     `id` AS `old_id`,
     'jos_electedofficials' AS `old_table`,
-    (SELECT `id` FROM `#__pv_parties` p WHERE `party`=LEFT(`p`.`name`,1)) AS `current_party_id`,
+    (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(p.`name`,1)=`party`) AS `current_party_id`,
     '' AS `image`,
     '' AS `prefix`,
     TRIM(`first_name`) AS `first_name`,
     REPLACE(TRIM(`middle_name`),'\.','') AS `middle_name`,
     TRIM(`last_name`) AS `last_name`,
-    REPLACE(TRIM(`suffix`),'\.','') as `suffix`,
+    REPLACE(TRIM(`suffix`),'\.','') AS `suffix`,
     CASE TRIM(`first_name`)
       WHEN "Kathleen" THEN "f"
       WHEN "Christine" THEN "f"
@@ -454,15 +467,15 @@ INSERT INTO `#__pv_persons`
     '' AS `bio`,
     1 AS `published`,
     0 AS `checked_out`,
-    '0000-00-00 00:00:00' AS checked_out_time,
-    NOW() AS `created`,
-    NOW() AS `updated`
+    @tnl AS checked_out_time,
+    @tnow AS `created`,
+    @tnow AS `updated`
     FROM `#__electedofficials` 
     WHERE 
       TRIM(`first_name`) NOT LIKE "VACANT" AND
       TRIM(`first_name`) IS NOT NULL AND
       TRIM(`first_name`) != ''
-    group by `id`;
+    GROUP BY `id`;
 
 /* correct some specific existing names */
 UPDATE #__pv_persons
@@ -475,20 +488,37 @@ UPDATE #__pv_persons
 SET @rank=0;
 INSERT INTO `#__pv_officers` 
   SELECT 
-    '' as `id`,
-    `o`.`id` as `office_id`,
-    `p`.`current_party_id` as `party_id`,
-    `p`.`id` as `person_id`,
-    0 as `election_id`,
+    '' AS `id`,
+    o.`id` AS `office_id`,
+    p.`current_party_id` AS `party_id`,
+    p.`id` AS `person_id`,
+    0 AS `election_id`,
     @rank:=@rank+1 AS `order`,
-    '0000-00-00 00:00:00' as `created`,
-    '0000-00-00 00:00:00' as `updated`
+    @tnow AS `created`,
+    @tnow AS `updated`
     FROM 
-      `#__pv_offices` `o`, 
-      `#__pv_persons` `p` 
+      `#__pv_offices` o, 
+      `#__pv_persons` p 
     WHERE
-      `p`.`old_id` = `o`.`old_id`;
-      
+      p.`old_id` = o.`old_id`;
+
+INSERT INTO `#__pv_officers`
+  SELECT 
+    @rank:=@rank+1 AS `id`,
+    o.`id` AS `office_id`,
+    (SELECT id FROM #__pv_parties where `name`='None') AS `party_id`,
+    (SELECT id FROM #__pv_persons where `first_name`='Vacant') AS `person_id`,
+    0 AS `election_id`,
+    @rank AS `order`,
+    @tnl AS `created`,
+    @tnl AS `updated`    
+  FROM
+    `#__pv_offices` o, 
+    `#__electedofficials` e
+  WHERE 
+    o.`old_id` = e.`id` AND
+    TRIM(e.`first_name`) LIKE "VACANT"
+
 /*
   `id` int(10) unsigned NOT NULL auto_increment,
   `old_id` int(10) unsigned NOT NULL default 0,
@@ -505,8 +535,8 @@ INSERT INTO `#__pv_officers`
   `bio` text NOT NULL,
   `published` tinyint(1) unsigned NOT NULL default 0,
   `checked_out` int(10) NOT NULL default 0,
-  `checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00',
-  `created` datetime NOT NULL default '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL default '0000-00-00 00:00:00',
+  `checked_out_time` datetime NOT NULL default @tnl,
+  `created` datetime NOT NULL default @tnl,
+  `updated` datetime NOT NULL default @tnl,
 */
 

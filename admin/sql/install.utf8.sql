@@ -465,10 +465,10 @@ INSERT INTO `#__pv_persons`
     (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(p.`name`,1)=`party`) AS `current_party_id`,
     '' AS `image`,
     '' AS `prefix`,
-    TRIM(`first_name`) AS `first_name`,
-    REPLACE(TRIM(`middle_name`),'\.','') AS `middle_name`,
-    TRIM(`last_name`) AS `last_name`,
-    REPLACE(TRIM(`suffix`),'\.','') AS `suffix`,
+    IFNULL(TRIM(`first_name`), '') AS `first_name`,
+    IFNULL(REPLACE(TRIM(`middle_name`),'\.',''), '') AS `middle_name`,
+    IFNULL(TRIM(`last_name`), '') AS `last_name`,
+    IFNULL(REPLACE(TRIM(`suffix`),'\.',''), '') AS `suffix`,
     CASE TRIM(`first_name`)
       WHEN "Kathleen" THEN "f"
       WHEN "Christine" THEN "f"
@@ -500,7 +500,7 @@ INSERT INTO `#__pv_persons`
       TRIM(`first_name`) NOT LIKE "VACANT" AND
       TRIM(`first_name`) IS NOT NULL AND
       TRIM(`first_name`) != ''
-    GROUP BY `id`;
+    ORDER BY TRIM(`first_name`) ASC, TRIM(`last_name`) ASC;
 
 /* correct some specific existing names */
 UPDATE #__pv_persons

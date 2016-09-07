@@ -408,7 +408,7 @@ INSERT INTO `#__pv_seats`
   `order` int(10) unsigned NOT NULL DEFAULT 0,
   `name` varchar(255) NOT NULL DEFAULT '',
   `description` text NOT NULL DEFAULT '',
-  `attributes` text NOT NULL DEFAULT '',
+  `level` enum('local','state','federal') DEFAULT 'local',
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `checked_out` int(10) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -424,14 +424,19 @@ INSERT INTO `#__pv_offices`
     @rder:=@rder+1 as `order`,
     IF(`office`='City Council At-Large','City Council',`office`) AS `name`,
     '' AS `description`,
-    `office_level` AS `level`
+    `office_level` AS `level`,
+    1 as `published`,
+    0 as `checked_out`,
+    @tnl as `checked_out_time`,
+    @tnow AS `created`,
+    @tnow AS `updated`
   FROM 
     `#__pv_seats` s,
     `#__electedofficials` e
   WHERE
     s.old_id=e.id
   ORDER BY e.`office`;
-  
+
 /* ------------ pv_persons ------------ */
 /* "Vacant" person will be id=1*/
 INSERT INTO `#__pv_persons` VALUES 

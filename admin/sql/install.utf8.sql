@@ -460,7 +460,7 @@ INSERT INTO `#__pv_offices`
     @rder:=@rder+1 as `order`,
     IF(`office`='City Council At-Large','City Council',`office`) AS `name`,
     '' AS `description`,
-    `office_level` AS `level`,
+    `office_level` AS `level`
   FROM 
     `#__pv_seats` s,
     `#__electedofficials` e

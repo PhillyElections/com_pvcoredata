@@ -430,7 +430,8 @@ INSERT INTO `#__pv_offices`
     `#__electedofficials` e
   WHERE
     s.old_id=e.id
-  ORDER BY e.`office`
+  ORDER BY e.`office`;
+  
 /* ------------ pv_persons ------------ */
 /* "Vacant" person will be id=1*/
 INSERT INTO `#__pv_persons` VALUES 
@@ -612,10 +613,9 @@ INSERT INTO `#__pv_officers`
     `#__electedofficials` e
   WHERE 
     o.`old_id` = e.`id` AND
-    TRIM(e.`first_name`) LIKE "VACANT"
+    TRIM(e.`first_name`) LIKE "VACANT";
 
 /* candidates */
-INSERT INTO `#__pv_candidates` VALUES
   
  
 /* TODO: Migrate office addresses */

@@ -229,23 +229,6 @@ CREATE TABLE IF NOT EXISTS `#__pv_questions` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `#__pv_reports` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `candidate_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `cycle_to_election_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `name` varchar(255) DEFAULT NULL,
-  `filename` varchar(255) DEFAULT NULL,
-  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(10) unsigned NOT NULL DEFAULT 0,
-  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `pv_reports_unique_id` (`candidate_id`,`cycle_to_election_id`),
-  KEY `pv_reports_candidate_id` (`candidate_id`),
-  KEY `pv_reports_cycle_to_election_id` (`cycle_to_election_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 CREATE TABLE IF NOT EXISTS `#__pv_seats` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `term_id` int(10) unsigned NOT NULL DEFAULT 0,
@@ -320,7 +303,7 @@ INSERT INTO `#__pv_parties` VALUES
   ('', 'Independant', 'Ind', '', @tnl, @tnow, @tnow),
   ('', 'Justice Party', 'Jus', '', @tnl, @tnow, @tnow),
   ('', 'Libertarian Party', 'Lib', '', @tnl, @tnow, @tnow),
-  ('', 'Socialization & Liberation Party', 'Lib', '', @tnl, @tnow, @tnow);
+  ('', 'Socialization & Liberation Party', 'Soc', '', @tnl, @tnow, @tnow);
 
 /* ------------ pv_terms ------------ */
 INSERT INTO `#__pv_terms` VALUES
@@ -579,6 +562,22 @@ INSERT INTO #__pv_persons VALUES
 
 
 /* ------------ pv_officers ------------ */
+  /*`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `seat_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `party_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `person_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `attributes` text NOT NULL DEFAULT '',
+  `first_year` int(10) unsigned NOT NULL DEFAULT 0,
+  `order` int(10) unsigned NOT NULL DEFAULT 0,
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `pv_officers_uniqe_id` (`seat_id`,`person_id`,`party_id`,`first_year`),
+  KEY `pv_officers_seat_id` (`seat_id`),
+  KEY `pv_officers_person_id` (`person_id`),
+  KEY `pv_officers_party_id` (`party_id`),
+  KEY `pv_officers_first_year` (`party_id`)
+*/
 /* TODO: refactor the next two into one... 
     will require an outer join to pv_persons and inner to electedofficials */
 SET @rank=0; /* `order` needs to be incremented */
@@ -597,7 +596,8 @@ INSERT INTO `#__pv_officers`
     @tnow AS `updated`
     FROM 
       `#__pv_offices` o, 
-      `#__pv_persons` p 
+      `#__pv_persons` p,
+
     WHERE
       p.`old_id` = o.`old_id`;
 

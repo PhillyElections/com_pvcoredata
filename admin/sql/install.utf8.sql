@@ -425,6 +425,58 @@ INSERT INTO `#__pv_offices`
 INSERT INTO `#__pv_persons` VALUES 
  ('', 0, '', 1, '', '', 'Vacant', '', '', '', '', '', '', 1, 0, @tnl, @tnow, @tnow);
 
+INSERT INTO `#__pv_persons`
+  SELECT
+    '' AS `id`,
+    `id` AS `old_id`,
+    'jos_electedofficials' AS `old_table`,
+    (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(p.`name`,1)=`party`) AS `current_party_id`,
+    '' AS `image`,
+    '' AS `prefix`,
+    IFNULL(TRIM(`first_name`), '') AS `first_name`,
+    IFNULL(REPLACE(TRIM(`middle_name`),'\.',''), '') AS `middle_name`,
+    IFNULL(TRIM(`last_name`), '') AS `last_name`,
+    IFNULL(REPLACE(TRIM(`suffix`),'\.',''), '') AS `suffix`,
+    CASE TRIM(`first_name`)
+      WHEN "Kathleen" THEN "f"
+      WHEN "Christine" THEN "f"
+      WHEN "Shirley" THEN "f"
+      WHEN "Martina" THEN "f"
+      WHEN "Maria" THEN "f"
+      WHEN "Vanessa" THEN "f"
+      WHEN "Louise" THEN "f"
+      WHEN "Pamela" THEN "f"
+      WHEN "Michelle" THEN "f"
+      WHEN "Leslie" THEN "f"
+      WHEN "Rosita" THEN "f"
+      WHEN "Cherelle" THEN "f"
+      WHEN "Stephanie" THEN "f"
+      WHEN "Jannie" THEN "f"
+      WHEN "Cindy" THEN "f"
+      WHEN "Marian" THEN "f"
+      ELSE "m"
+    END AS `gender`,
+    '' AS `marital_status`,
+    '' AS `bio`,
+    1 AS `published`,
+    0 AS `checked_out`,
+    @tnl AS checked_out_time,
+    @tnow AS `created`,
+    @tnow AS `updated`
+    FROM `#__electedofficials` 
+    WHERE 
+      TRIM(`first_name`) NOT LIKE "VACANT" AND
+      TRIM(`first_name`) IS NOT NULL AND
+      TRIM(`first_name`) != ''
+    ORDER BY TRIM(`first_name`) ASC, TRIM(`last_name`) ASC;
+
+/* correct some specific existing names */
+UPDATE #__pv_persons
+  SET
+    `first_name` = LEFT(TRIM(`first_name`),1),
+    `middle_name` = RIGHT(TRIM(`first_name`), LENGTH(TRIM(`first_name`))-3)
+  WHERE
+    `first_name` IN ('W. Wilson','R. Seth','W. Curtis');
 
 INSERT INTO #__pv_persons VALUES 
 	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Abbe'), TRIM(''), TRIM('Fletman'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),

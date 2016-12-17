@@ -580,7 +580,8 @@ INSERT INTO #__pv_persons VALUES
 */
 /* TODO: refactor the next two into one... 
     will require an outer join to pv_persons and inner to electedofficials */
-SET @rank=0; /* `order` needs to be incremented */
+SET @rank=0; 
+/* `order` needs to be incremented */
 INSERT INTO `#__pv_officers` 
   SELECT 
     '' AS `id`,

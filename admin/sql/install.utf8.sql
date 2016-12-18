@@ -23,9 +23,14 @@ DROP TABLE IF EXISTS `#__pv_votes`;
 
 SET FOREIGN_KEY_CHECKS=1;
 
+/* ==================== constants ==================== */
+SET @tnow = NOW();
+SET @tnl  = '0000-00-00 00:00:00';
+SET @tns  = '0000-00-00';
+
 /* ==================== tables ==================== */
 CREATE TABLE IF NOT EXISTS `#__pv_addresses` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `address1` varchar(100) DEFAULT NULL,
   `address2` varchar(100) DEFAULT NULL,
   `address3` varchar(100) DEFAULT NULL,
@@ -33,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_addresses` (
   `region` varchar(100) DEFAULT NULL,
   `postcode` varchar(100) DEFAULT NULL,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(10) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -41,18 +46,18 @@ CREATE TABLE IF NOT EXISTS `#__pv_addresses` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_address_xrefs` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `address_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `right_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `address_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `right_id` int(11) unsigned NOT NULL DEFAULT 0,
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__candidate_to_election` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `candidate_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `election_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `candidate_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `election_id` int(11) unsigned NOT NULL DEFAULT 0,
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
@@ -62,14 +67,14 @@ CREATE TABLE IF NOT EXISTS `#__candidate_to_election` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_candidates` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `seat_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `party_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `person_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `year` int(10) unsigned NOT NULL DEFAULT 0,
-  `order` int(10) unsigned NOT NULL DEFAULT 0,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `seat_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `party_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `person_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `year` int(11) unsigned NOT NULL DEFAULT 0,
+  `order` int(11) unsigned NOT NULL DEFAULT 0,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(10) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -82,22 +87,31 @@ CREATE TABLE IF NOT EXISTS `#__pv_candidates` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_cycles` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `description` text NOT NULL DEFAULT '',
   `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(10) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
+INSERT INTO `#__pv_cycles` values
+  ('', 1, 'First Cycle', '', 1, '', @tnl, @tnow, @tnow),
+  ('', 2, 'Second Cycle', '', 2, '', @tnl, @tnow, @tnow),
+  ('', 3, 'Third Cycle', '', 3, '', @tnl, @tnow, @tnow),
+  ('', 4, 'Fourth Cycle', '', 4, '', @tnl, @tnow, @tnow),
+  ('', 5, 'Fifth Cycle', '', 5, '', @tnl, @tnow, @tnow),
+  ('', 6, 'Sixth Cycle', '', 6, '', @tnl, @tnow, @tnow),
+  ('', 7, 'Seventh Cycle', '', 7, '', @tnl, @tnow, @tnow);
+
 CREATE TABLE IF NOT EXISTS `#__pv_cycle_year` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `cycle_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `year` int(10) unsigned NOT NULL DEFAULT 0,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `cycle_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `year` int(11) unsigned NOT NULL DEFAULT 0,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -108,17 +122,17 @@ CREATE TABLE IF NOT EXISTS `#__pv_cycle_year` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_elections` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `old_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `old_id` int(11) unsigned NOT NULL DEFAULT 0,
   `old_table` varchar(255) DEFAULT NULL,
-  `year` int(10) unsigned NOT NULL DEFAULT 0,
+  `year` int(11) unsigned NOT NULL DEFAULT 0,
   `name` varchar(255) DEFAULT NULL,
   `description` text NOT NULL DEFAULT '',
   `is_special` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `is_current` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `date` date NOT NULL DEFAULT '0000-00-00',
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(10) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -127,13 +141,13 @@ CREATE TABLE IF NOT EXISTS `#__pv_elections` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_link_xrefs` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `link_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `right_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `table_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `order` int(10) unsigned NOT NULL DEFAULT 0,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `link_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `right_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `table_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `order` int(11) unsigned NOT NULL DEFAULT 0,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(10) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -141,28 +155,38 @@ CREATE TABLE IF NOT EXISTS `#__pv_link_xrefs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_link_types` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `limit` int(10) DEFAULT '0' COMMENT '0 for no limit, 1 or greater for a specific limit',
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `limit` int(11) DEFAULT '0' COMMENT '0 for no limit, 1 or greater for a specific limit',
   `name` varchar(255) DEFAULT NULL,
   `symbol` varchar(20) DEFAULT NULL COMMENT 'html code',
   `glyph` varchar(20) DEFAULT NULL COMMENT 'favicon definition',
   `image` varchar(255) DEFAULT NULL,
   `prefer` enum('symbol','glyph','image') DEFAULT 'symbol',
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(10) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
+INSERT INTO `#__pv_link_types` VALUES
+  ('', 3,'phone','','','','symbol', '','', @tnl, @tnow, @tnow),
+  ('', 1,'cell','','','','symbol', '','', @tnl, @tnow, @tnow),
+  ('', 1,'fax','','','','symbol', '','', @tnl, @tnow, @tnow),
+  ('', 1,'email','','','','symbol', '','', @tnl, @tnow, @tnow),
+  ('', 1,'homepage','','','','symbol', '','', @tnl, @tnow, @tnow),
+  ('', 1,'twitter','','','','symbol', '','', @tnl, @tnow, @tnow),
+  ('', 1,'facebook','','','','symbol','', '', @tnl, @tnow, @tnow),
+  ('', 1,'linkdin','','','','symbol','', '', @tnl, @tnow, @tnow);
+
 CREATE TABLE IF NOT EXISTS `#__pv_links` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `type_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `type_id` int(11) unsigned NOT NULL DEFAULT 0,
   `value` varchar(255) DEFAULT NULL,
-  `order` int(10) unsigned NOT NULL DEFAULT 0,
+  `order` int(11) unsigned NOT NULL DEFAULT 0,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(10) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -171,15 +195,15 @@ CREATE TABLE IF NOT EXISTS `#__pv_links` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_officers` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `seat_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `party_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `person_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `seat_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `party_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `person_id` int(11) unsigned NOT NULL DEFAULT 0,
   `attributes` text NOT NULL DEFAULT '',
-  `first_year` int(10) unsigned NOT NULL DEFAULT 0,
-  `order` int(10) unsigned NOT NULL DEFAULT 0,
+  `first_year` int(11) unsigned NOT NULL DEFAULT 0,
+  `order` int(11) unsigned NOT NULL DEFAULT 0,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(10) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -192,13 +216,13 @@ CREATE TABLE IF NOT EXISTS `#__pv_officers` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_offices` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `order` int(10) unsigned NOT NULL DEFAULT 0,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `order` int(11) unsigned NOT NULL DEFAULT 0,
   `name` varchar(255) NOT NULL DEFAULT '',
   `description` text NOT NULL DEFAULT '',
   `level` enum('local','state','federal') DEFAULT 'local',
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(10) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -207,11 +231,11 @@ CREATE TABLE IF NOT EXISTS `#__pv_offices` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_organizations` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
   `description` text NULL DEFAULT '',
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(10) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -219,131 +243,17 @@ CREATE TABLE IF NOT EXISTS `#__pv_organizations` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_parties` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `abbr` varchar(10) DEFAULT NULL,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(10) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `#__pv_persons` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `old_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `old_table` varchar(100) NOT NULL DEFAULT '',
-  `current_party_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `image` varchar(255) DEFAULT NULL,
-  `prefix` varchar(25) DEFAULT NULL,
-  `first_name` varchar(40) DEFAULT NULL,
-  `middle_name` varchar(40) DEFAULT NULL,
-  `last_name` varchar(40) DEFAULT NULL,
-  `suffix` varchar(25) DEFAULT NULL,
-  `gender` char(1) DEFAULT NULL,
-  `marital_status` char(1) DEFAULT NULL,
-  `bio` text NOT NULL DEFAULT '',
-  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(10) unsigned NOT NULL DEFAULT 0,
-  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `pv_persons_current_party_id` (`current_party_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `#__pv_questions` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT '',
-  `description` text NULL DEFAULT '',
-  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(10) unsigned NOT NULL DEFAULT 0,
-  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `#__pv_seats` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `term_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `office_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `old_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `old_table` varchar(100) NOT NULL DEFAULT '',
-  `order` int(10) unsigned NOT NULL DEFAULT 0,
-  `description` text NOT NULL DEFAULT '',
-  `district` text NOT NULL DEFAULT '',
-  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(10) unsigned NOT NULL DEFAULT 0,
-  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `pv_seats_term_id` (`term_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `#__pv_terms` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `offset` int(10) unsigned NOT NULL DEFAULT 0,
-  `length` int(10) unsigned NOT NULL DEFAULT 0,
-  `name` varchar(255) DEFAULT NULL,
-  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(10) unsigned NOT NULL DEFAULT 0,
-  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-/* ==================== FK relationships ==================== */
-SET FOREIGN_KEY_CHECKS=0;
-
-
-
-/* ==================== constants ==================== */
-SET @tnow = NOW();
-SET @tnl  = '0000-00-00 00:00:00';
-SET @tns  = '0000-00-00';
-
-/* ==================== static data ==================== */
-/* ------------ pv_cycles ------------ */
-INSERT INTO `#__pv_cycles` values
-  ('', 1, 'First Cycle', '', 1, '', @tnl, @tnow, @tnow),
-  ('', 2, 'Second Cycle', '', 2, '', @tnl, @tnow, @tnow),
-  ('', 3, 'Third Cycle', '', 3, '', @tnl, @tnow, @tnow),
-  ('', 4, 'Fourth Cycle', '', 4, '', @tnl, @tnow, @tnow),
-  ('', 5, 'Fifth Cycle', '', 5, '', @tnl, @tnow, @tnow),
-  ('', 6, 'Sixth Cycle', '', 6, '', @tnl, @tnow, @tnow),
-  ('', 7, 'Seventh Cycle', '', 7, '', @tnl, @tnow, @tnow);
-
-/*
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `limit` int(10) DEFAULT '0' COMMENT '0 for no limit, 1 or greater for a specific limit',
-  `name` varchar(255) DEFAULT NULL,
-  `symbol` varchar(20) DEFAULT NULL COMMENT 'html code',
-  `glyph` varchar(20) DEFAULT NULL COMMENT 'favicon definition',
-  `image` varchar(255) DEFAULT NULL,
-  `prefer` enum('symbol','glyph','image') DEFAULT 'symbol',
-  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(10) unsigned NOT NULL DEFAULT 0,
-  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-*/
-
-/* ------------ pv_link_types ------------ */
-INSERT INTO `#__pv_link_types` VALUES
-  ('', 3,'phone','','','','symbol', '','', @tnl, @tnow, @tnow),
-  ('', 1,'cell','','','','symbol', '','', @tnl, @tnow, @tnow),
-  ('', 1,'fax','','','','symbol', '','', @tnl, @tnow, @tnow),
-  ('', 1,'email','','','','symbol', '','', @tnl, @tnow, @tnow),
-  ('', 1,'homepage','','','','symbol', '','', @tnl, @tnow, @tnow),
-  ('', 1,'twitter','','','','symbol', '','', @tnl, @tnow, @tnow),
-  ('', 1,'facebook','','','','symbol','', '', @tnl, @tnow, @tnow),
-  ('', 1,'linkdin','','','','symbol','', '', @tnl, @tnow, @tnow);
-
-/* ------------ pv_parties ------------ */
 INSERT INTO `#__pv_parties` VALUES
   ('', 'None', 'None', '', @tnl, @tnow, @tnow),
   ('', 'Democratic Party', 'Dem', '', @tnl, @tnow, @tnow),
@@ -356,7 +266,72 @@ INSERT INTO `#__pv_parties` VALUES
   ('', 'Libertarian Party', 'Lib', '', @tnl, @tnow, @tnow),
   ('', 'Socialization & Liberation Party', 'Soc', '', @tnl, @tnow, @tnow);
 
-/* ------------ pv_terms ------------ */
+CREATE TABLE IF NOT EXISTS `#__pv_persons` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `old_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `old_table` varchar(100) NOT NULL DEFAULT '',
+  `current_party_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `image` varchar(255) DEFAULT NULL,
+  `prefix` varchar(25) DEFAULT NULL,
+  `first_name` varchar(40) DEFAULT NULL,
+  `middle_name` varchar(40) DEFAULT NULL,
+  `last_name` varchar(40) DEFAULT NULL,
+  `suffix` varchar(25) DEFAULT NULL,
+  `gender` char(1) DEFAULT NULL,
+  `marital_status` char(1) DEFAULT NULL,
+  `bio` text NOT NULL DEFAULT '',
+  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `pv_persons_current_party_id` (`current_party_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `#__pv_questions` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `description` text NULL DEFAULT '',
+  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `#__pv_seats` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `term_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `office_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `old_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `old_table` varchar(100) NOT NULL DEFAULT '',
+  `order` int(11) unsigned NOT NULL DEFAULT 0,
+  `description` text NOT NULL DEFAULT '',
+  `district` text NOT NULL DEFAULT '',
+  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `pv_seats_term_id` (`term_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `#__pv_terms` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `offset` int(11) unsigned NOT NULL DEFAULT 0,
+  `length` int(11) unsigned NOT NULL DEFAULT 0,
+  `name` varchar(255) DEFAULT NULL,
+  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
 INSERT INTO `#__pv_terms` VALUES
   ('', 0, 2, '2-year, no offset', 1, 0, @tnl, @tnow, @tnow),
   ('', 0, 6, '4-year, no offset', 1, 0, @tnl, @tnow, @tnow),
@@ -365,6 +340,10 @@ INSERT INTO `#__pv_terms` VALUES
   ('', 3, 4, '4-year, 3year offset', 1, 0, @tnl, @tnow, @tnow),
   ('', 0, 6, '6-year, no offset', 1, 0, @tnl, @tnow, @tnow),
   ('', 4, 6, '6-year, 4year offset', 1, 0, @tnl, @tnow, @tnow);
+
+/* ==================== FK relationships ==================== */
+SET FOREIGN_KEY_CHECKS=0;
+
 
 /* ==================== dynamic data ==================== */
 /* ------------ pv_elections ------------ */
@@ -438,13 +417,13 @@ INSERT INTO `#__pv_seats`
     FROM `#__electedofficials` group by `id`;
 
 /*
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `order` int(10) unsigned NOT NULL DEFAULT 0,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `order` int(11) unsigned NOT NULL DEFAULT 0,
   `name` varchar(255) NOT NULL DEFAULT '',
   `description` text NOT NULL DEFAULT '',
   `level` enum('local','state','federal') DEFAULT 'local',
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(10) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -613,13 +592,13 @@ INSERT INTO #__pv_persons VALUES
 
 
 /* ------------ pv_officers ------------ */
-  /*`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `seat_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `party_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `person_id` int(10) unsigned NOT NULL DEFAULT 0,
+  /*`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `seat_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `party_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `person_id` int(11) unsigned NOT NULL DEFAULT 0,
   `attributes` text NOT NULL DEFAULT '',
-  `first_year` int(10) unsigned NOT NULL DEFAULT 0,
-  `order` int(10) unsigned NOT NULL DEFAULT 0,
+  `first_year` int(11) unsigned NOT NULL DEFAULT 0,
+  `order` int(11) unsigned NOT NULL DEFAULT 0,
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),

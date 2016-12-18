@@ -255,16 +255,16 @@ CREATE TABLE IF NOT EXISTS `#__pv_parties` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `#__pv_parties` VALUES
-  ('', 'None', 'None', '', @tnl, @tnow, @tnow),
-  ('', 'Democratic Party', 'Dem', '', @tnl, @tnow, @tnow),
-  ('', 'Republican Party', 'Rep', '', @tnl, @tnow, @tnow),
-  ('', 'Constitution Party', 'Con', '', @tnl, @tnow, @tnow),
-  ('', 'Free Dominion Party', 'Fre', '', @tnl, @tnow, @tnow),
-  ('', 'Green Party', 'Gre', '', @tnl, @tnow, @tnow),
-  ('', 'Independant', 'Ind', '', @tnl, @tnow, @tnow),
-  ('', 'Justice Party', 'Jus', '', @tnl, @tnow, @tnow),
-  ('', 'Libertarian Party', 'Lib', '', @tnl, @tnow, @tnow),
-  ('', 'Socialization & Liberation Party', 'Soc', '', @tnl, @tnow, @tnow);
+  ('', 'None', 'None', '', '', @tnl, @tnow, @tnow),
+  ('', 'Democratic Party', 'Dem', '', '', @tnl, @tnow, @tnow),
+  ('', 'Republican Party', 'Rep', '', '', @tnl, @tnow, @tnow),
+  ('', 'Constitution Party', 'Con', '', '', @tnl, @tnow, @tnow),
+  ('', 'Free Dominion Party', 'Fre', '', '', @tnl, @tnow, @tnow),
+  ('', 'Green Party', 'Gre', '', '', @tnl, @tnow, @tnow),
+  ('', 'Independant', 'Ind', '', '', @tnl, @tnow, @tnow),
+  ('', 'Justice Party', 'Jus', '', '', @tnl, @tnow, @tnow),
+  ('', 'Libertarian Party', 'Lib', '', '', @tnl, @tnow, @tnow),
+  ('', 'Socialization & Liberation Party', 'Soc', '', '', @tnl, @tnow, @tnow);
 
 CREATE TABLE IF NOT EXISTS `#__pv_persons` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,

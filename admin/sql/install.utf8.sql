@@ -317,16 +317,29 @@ INSERT INTO `#__pv_cycles` values
   ('', 6, 'Sixth Cycle', '', 6, '', @tnl, @tnow, @tnow),
   ('', 7, 'Seventh Cycle', '', 7, '', @tnl, @tnow, @tnow);
 
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `limit` int(10) DEFAULT '0' COMMENT '0 for no limit, 1 or greater for a specific limit',
+  `name` varchar(255) DEFAULT NULL,
+  `symbol` varchar(20) DEFAULT NULL COMMENT 'html code',
+  `glyph` varchar(20) DEFAULT NULL COMMENT 'favicon definition',
+  `image` varchar(255) DEFAULT NULL,
+  `prefer` enum('symbol','glyph','image') DEFAULT 'symbol',
+  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(10) unsigned NOT NULL DEFAULT 0,
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+
 /* ------------ pv_link_types ------------ */
 INSERT INTO `#__pv_link_types` VALUES
-  ('', 3,'phone','','','','symbol', '', @tnl, @tnow, @tnow),
-  ('', 1,'cell','','','','symbol', '', @tnl, @tnow, @tnow),
-  ('', 1,'fax','','','','symbol', '', @tnl, @tnow, @tnow),
-  ('', 1,'email','','','','symbol', '', @tnl, @tnow, @tnow),
-  ('', 1,'homepage','','','','symbol', '', @tnl, @tnow, @tnow),
-  ('', 1,'twitter','','','','symbol', '', @tnl, @tnow, @tnow),
-  ('', 1,'facebook','','','','symbol', '', @tnl, @tnow, @tnow),
-  ('', 1,'linkdin','','','','symbol', '', @tnl, @tnow, @tnow);
+  ('', 3,'phone','','','','symbol', '','', @tnl, @tnow, @tnow),
+  ('', 1,'cell','','','','symbol', '','', @tnl, @tnow, @tnow),
+  ('', 1,'fax','','','','symbol', '','', @tnl, @tnow, @tnow),
+  ('', 1,'email','','','','symbol', '','', @tnl, @tnow, @tnow),
+  ('', 1,'homepage','','','','symbol', '','', @tnl, @tnow, @tnow),
+  ('', 1,'twitter','','','','symbol', '','', @tnl, @tnow, @tnow),
+  ('', 1,'facebook','','','','symbol','', '', @tnl, @tnow, @tnow),
+  ('', 1,'linkdin','','','','symbol','', '', @tnl, @tnow, @tnow);
 
 /* ------------ pv_parties ------------ */
 INSERT INTO `#__pv_parties` VALUES

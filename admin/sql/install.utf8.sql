@@ -148,6 +148,9 @@ CREATE TABLE IF NOT EXISTS `#__pv_link_types` (
   `glyph` varchar(20) DEFAULT NULL COMMENT 'favicon definition',
   `image` varchar(255) DEFAULT NULL,
   `prefer` enum('symbol','glyph','image') DEFAULT 'symbol',
+  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(10) unsigned NOT NULL DEFAULT 0,
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)

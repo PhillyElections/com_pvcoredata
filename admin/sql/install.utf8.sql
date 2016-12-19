@@ -17,9 +17,7 @@ DROP TABLE IF EXISTS `#__pv_officers`;
 DROP TABLE IF EXISTS `#__pv_offices`;
 DROP TABLE IF EXISTS `#__pv_parties`;
 DROP TABLE IF EXISTS `#__pv_persons`;
-DROP TABLE IF EXISTS `#__pv_reports`;
-DROP TABLE IF EXISTS `#__pv_terms`;
-DROP TABLE IF EXISTS `#__pv_votes`;
+DROP TABLE IF EXISTS `#__pv_seats`;
 
 SET FOREIGN_KEY_CHECKS=1;
 

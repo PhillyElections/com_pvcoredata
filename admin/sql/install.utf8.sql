@@ -1,16 +1,12 @@
 SET FOREIGN_KEY_CHECKS=0;
 
-DROP TABLE IF EXISTS `#__pv_address_to_office`;
-DROP TABLE IF EXISTS `#__pv_address_to_person`;
+DROP TABLE IF EXISTS `#__pv_address_xrefs`;
 DROP TABLE IF EXISTS `#__pv_address_to_seat`;
 DROP TABLE IF EXISTS `#__pv_addresses`;
-DROP TABLE IF EXISTS `#__pv_candidates`;
 DROP TABLE IF EXISTS `#__pv_cycle_year`;
 DROP TABLE IF EXISTS `#__pv_cycles`;
 DROP TABLE IF EXISTS `#__pv_elections`;
-DROP TABLE IF EXISTS `#__pv_link_to_office`;
-DROP TABLE IF EXISTS `#__pv_link_to_person`;
-DROP TABLE IF EXISTS `#__pv_link_to_seat`;
+DROP TABLE IF EXISTS `#__pv_link_xrefs`;
 DROP TABLE IF EXISTS `#__pv_link_types`;
 DROP TABLE IF EXISTS `#__pv_links`;
 DROP TABLE IF EXISTS `#__pv_officers`;
@@ -18,6 +14,7 @@ DROP TABLE IF EXISTS `#__pv_offices`;
 DROP TABLE IF EXISTS `#__pv_parties`;
 DROP TABLE IF EXISTS `#__pv_persons`;
 DROP TABLE IF EXISTS `#__pv_seats`;
+DROP TABLE IF EXISTS `#__pv_terms`;
 
 SET FOREIGN_KEY_CHECKS=1;
 
@@ -276,18 +273,6 @@ CREATE TABLE IF NOT EXISTS `#__pv_persons` (
   KEY `pv_persons_current_party_id` (`current_party_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `#__pv_questions` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT '',
-  `description` text NULL DEFAULT '',
-  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
-  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
 CREATE TABLE IF NOT EXISTS `#__pv_seats` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `term_id` int(11) unsigned NOT NULL DEFAULT 0,
@@ -394,7 +379,7 @@ INSERT INTO `#__pv_seats`
       TRIM(`state_senate_district`),
       TRIM(`state_representative_district`),
       TRIM(`council_district`),
-      IF(`office`='City Council At-Large','0','')
+      IF(`office`='City Council At-Large','','')
     ) AS `district`,
     1 AS `published`,
     0 AS `checked_out`,

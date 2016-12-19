@@ -200,8 +200,8 @@ CREATE TABLE IF NOT EXISTS `#__pv_officers` (
   `party_id` int(11) unsigned NOT NULL DEFAULT 0,
   `person_id` int(11) unsigned NOT NULL DEFAULT 0,
   `attributes` text NOT NULL DEFAULT '',
-  `first_election_year` smallint(5) unsigned NOT NULL DEFAULT 0,
-  `last_election_year` smallint(5) unsigned NOT NULL DEFAULT 0,
+  `first_elected_year` smallint(5) unsigned NOT NULL DEFAULT 0,
+  `last_elected_year` smallint(5) unsigned NOT NULL DEFAULT 0,
   `order` int(11) unsigned NOT NULL DEFAULT 0,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
@@ -209,11 +209,11 @@ CREATE TABLE IF NOT EXISTS `#__pv_officers` (
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `pv_officers_uniqe_id` (`seat_id`,`person_id`,`party_id`,`first_election_year`),
+  UNIQUE KEY `pv_officers_uniqe_id` (`seat_id`,`person_id`,`party_id`,`first_elected_year`),
   KEY `pv_officers_seat_id` (`seat_id`),
   KEY `pv_officers_person_id` (`person_id`),
   KEY `pv_officers_party_id` (`party_id`),
-  KEY `pv_officers_first_year` (`first_election_year`)
+  KEY `pv_officers_first_year` (`first_elected_year`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_offices` (
@@ -620,8 +620,7 @@ INSERT INTO `#__pv_officers`
     p.`current_party_id` AS `party_id`,
     p.`id` AS `person_id`,
     31 AS `election_id`,
-    `first_election_year`,
-    `last_election_year`,
+    `first_elected` as `first_elected_year`,
     @rank:=@rank+1 AS `order`,
     @tnow AS `created`,
     @tnow AS `updated`

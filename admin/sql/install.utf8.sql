@@ -200,7 +200,8 @@ CREATE TABLE IF NOT EXISTS `#__pv_officers` (
   `party_id` int(11) unsigned NOT NULL DEFAULT 0,
   `person_id` int(11) unsigned NOT NULL DEFAULT 0,
   `attributes` text NOT NULL DEFAULT '',
-  `first_year` int(11) unsigned NOT NULL DEFAULT 0,
+  `first_election_year` int(11) unsigned NOT NULL DEFAULT 0,
+  `last_election_year` int(11) unsigned NOT NULL DEFAULT 0,
   `order` int(11) unsigned NOT NULL DEFAULT 0,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
@@ -621,7 +622,6 @@ INSERT INTO `#__pv_officers`
     31 AS `election_id`,
     `first_election_year`,
     `last_election_year`,
-    `next_election_year`,
     @rank:=@rank+1 AS `order`,
     @tnow AS `created`,
     @tnow AS `updated`

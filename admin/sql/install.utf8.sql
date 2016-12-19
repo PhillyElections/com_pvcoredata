@@ -627,8 +627,9 @@ INSERT INTO `#__pv_officers`
     FROM 
       `#__pv_offices` o, 
       `#__pv_persons` p
-
+      `#__electedofficials` e
     WHERE
+      e.`id` = p.`old_id` and 
       p.`old_id` = o.`old_id`;
 
 /* had a problem getting id to correctly autoincrement

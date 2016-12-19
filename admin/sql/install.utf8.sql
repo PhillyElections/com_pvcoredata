@@ -209,11 +209,11 @@ CREATE TABLE IF NOT EXISTS `#__pv_officers` (
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `pv_officers_uniqe_id` (`seat_id`,`person_id`,`party_id`,`first_year`),
+  UNIQUE KEY `pv_officers_uniqe_id` (`seat_id`,`person_id`,`party_id`,`first_election_year`),
   KEY `pv_officers_seat_id` (`seat_id`),
   KEY `pv_officers_person_id` (`person_id`),
   KEY `pv_officers_party_id` (`party_id`),
-  KEY `pv_officers_first_year` (`party_id`)
+  KEY `pv_officers_first_year` (`first_election_year`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_offices` (

@@ -627,7 +627,7 @@ INSERT INTO `#__pv_officers`
     @tnow AS `updated`
     FROM 
       `#__pv_offices` o, 
-      `#__pv_persons` p,
+      `#__pv_persons` p
 
     WHERE
       p.`old_id` = o.`old_id`;

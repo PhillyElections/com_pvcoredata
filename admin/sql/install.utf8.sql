@@ -404,12 +404,10 @@ INSERT INTO `#__pv_seats`
 /* pv_offices */
 SET @rder=0;
 INSERT INTO `#__pv_offices`
-  SELECT distinct
-    '' AS `id`,
-    @rder:=@rder+1 as `order`,
+  (`name`, `level`, `published`, `check_out`, `checked_out_time`, `created`, `updated`)
+  SELECT DISTINCT
     IF(`office`='City Council At-Large','City Council',`office`) AS `name`,
-    '' AS `description`,
-    `office_level` AS `level`,
+    lower(`office_level`) AS `level`,
     1 as `published`,
     0 as `checked_out`,
     @tnl as `checked_out_time`,

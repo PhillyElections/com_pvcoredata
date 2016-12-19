@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_address_xrefs` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `#__candidate_to_election` (
+/*CREATE TABLE IF NOT EXISTS `#__candidate_election` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `candidate_id` int(11) unsigned NOT NULL DEFAULT 0,
   `election_id` int(11) unsigned NOT NULL DEFAULT 0,
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `#__candidate_to_election` (
   KEY `pv_candidate_to_election_candidate_id` (`candidate_id`),
   KEY `pv_candidate_to_election_election_id` (`election_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+*/
 CREATE TABLE IF NOT EXISTS `#__pv_candidates` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `seat_id` int(11) unsigned NOT NULL DEFAULT 0,

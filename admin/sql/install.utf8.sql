@@ -231,18 +231,6 @@ CREATE TABLE IF NOT EXISTS `#__pv_offices` (
   KEY `pv_offices_level` (`level`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `#__pv_organizations` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT '',
-  `description` text NULL DEFAULT '',
-  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
-  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
 CREATE TABLE IF NOT EXISTS `#__pv_parties` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
@@ -593,21 +581,20 @@ INSERT INTO #__pv_persons VALUES
 
 
 /* ------------ pv_officers ------------ */
-  /*`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  /*
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `seat_id` int(11) unsigned NOT NULL DEFAULT 0,
   `party_id` int(11) unsigned NOT NULL DEFAULT 0,
   `person_id` int(11) unsigned NOT NULL DEFAULT 0,
   `attributes` text NOT NULL DEFAULT '',
-  `first_year` int(11) unsigned NOT NULL DEFAULT 0,
+  `first_elected_year` smallint(5) unsigned NOT NULL DEFAULT 0,
+  `last_elected_year` smallint(5) unsigned NOT NULL DEFAULT 0,
   `order` int(11) unsigned NOT NULL DEFAULT 0,
+  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `pv_officers_uniqe_id` (`seat_id`,`person_id`,`party_id`,`first_year`),
-  KEY `pv_officers_seat_id` (`seat_id`),
-  KEY `pv_officers_person_id` (`person_id`),
-  KEY `pv_officers_party_id` (`party_id`),
-  KEY `pv_officers_first_year` (`party_id`)
 */
 /* TODO: refactor the next two into one... 
     will require an outer join to pv_persons and inner to electedofficials */
@@ -616,18 +603,17 @@ SET @rank=0;
 INSERT INTO `#__pv_officers` 
   SELECT 
     '' AS `id`,
-    o.`id` AS `office_id`,
+    o.`id` AS `seat_id`,
     p.`current_party_id` AS `party_id`,
     p.`id` AS `person_id`,
-    31 AS `election_id`,
-    `first_elected` as `first_elected_year`,
+    e.`first_elected` as `first_elected_year`,
     @rank:=@rank+1 AS `order`,
     @tnow AS `created`,
     @tnow AS `updated`
     FROM 
       `#__pv_offices` o, 
-      `#__pv_persons` p
-      `#__electedofficials` e
+      `#__pv_persons` p,
+      `#__pv_seats` s
     WHERE
       e.`id` = p.`old_id` and 
       p.`old_id` = o.`old_id`;

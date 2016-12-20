@@ -266,21 +266,7 @@ VALUES
 
 SET @year=1980;
 SET @cycle=0;
-/*
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `old_id` int(11) unsigned NOT NULL DEFAULT 0,
-  `year` int(11) unsigned NOT NULL DEFAULT 0,
-  `name` varchar(255) DEFAULT NULL,
-  `description` text NOT NULL DEFAULT '',
-  `is_special` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `is_current` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `date` date NOT NULL DEFAULT '0000-00-00',
-  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
-  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-*/
+
 INSERT INTO `#__pv_elections`
   (`old_id`, `year`, `name`, `is_special`, `is_current`, `published`, `date`, `created`)
   SELECT
@@ -331,8 +317,10 @@ UPDATE `#__pv_parties` set `ordering` = `id`;
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 */
-INSERT INTO `#__pv_persons` VALUES 
- ('', 0, '', 1, '', '', 'Vacant', '', '', '', '', '', '', 1, 0, @tnl, @tnow, @tnow);
+INSERT INTO `#__pv_persons`
+  (`old_id`, `current_party_id`, `first_name`, `published`, `created`)
+VALUES 
+  (0, 1, 'Vacant', 1, @tnow);
 
 INSERT INTO `#__pv_persons`
   (`old_id`, `current_party_id`, `first_name`, `middle_name`, `last_name`, `suffix`, `gender`, `published`, `created`)
@@ -374,8 +362,8 @@ INSERT INTO `#__pv_persons`
 /* correct some specific existing names */
 UPDATE #__pv_persons
   SET
-    `first_name` = LEFT(TRIM(`first_name`),1),
     `middle_name` = RIGHT(TRIM(`first_name`), LENGTH(TRIM(`first_name`))-3)
+    `first_name` = LEFT(TRIM(`first_name`),1),
   WHERE
     `first_name` IN ('W. Wilson','R. Seth','W. Curtis');
 

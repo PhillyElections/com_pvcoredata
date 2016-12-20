@@ -226,9 +226,8 @@ CREATE TABLE IF NOT EXISTS `#__pv_seats` (
   `term_id` int(11) unsigned NOT NULL DEFAULT 0,
   `office_id` int(11) unsigned NOT NULL DEFAULT 0,
   `old_id` int(11) unsigned NOT NULL DEFAULT 0,
-  `old_table` varchar(100) NOT NULL DEFAULT '',
-  `description` text NOT NULL DEFAULT '',
   `district` text NOT NULL DEFAULT '',
+  `description` text NOT NULL DEFAULT '',
   `ordering` int(11) unsigned NOT NULL DEFAULT 0,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
@@ -236,6 +235,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_seats` (
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
+  KEY `pv_seats_office_id` (`office_id`),
   KEY `pv_seats_term_id` (`term_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
@@ -253,15 +253,17 @@ CREATE TABLE IF NOT EXISTS `#__pv_terms` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `#__pv_link_types` VALUES
-  ('', 3,'phone','','','','symbol', '','', @tnl, @tnow, @tnow),
-  ('', 1,'cell','','','','symbol', '','', @tnl, @tnow, @tnow),
-  ('', 1,'fax','','','','symbol', '','', @tnl, @tnow, @tnow),
-  ('', 1,'email','','','','symbol', '','', @tnl, @tnow, @tnow),
-  ('', 1,'homepage','','','','symbol', '','', @tnl, @tnow, @tnow),
-  ('', 1,'twitter','','','','symbol', '','', @tnl, @tnow, @tnow),
-  ('', 1,'facebook','','','','symbol','', '', @tnl, @tnow, @tnow),
-  ('', 1,'linkdin','','','','symbol','', '', @tnl, @tnow, @tnow);
+INSERT INTO `#__pv_link_types` 
+  (`limit`, `name`, `prefer`, `created`)
+VALUES
+  (3,'phone','symbol', @tnow),
+  (1,'cell','symbol', @tnow),
+  (1,'fax','symbol', @tnow),
+  (1,'email','symbol', @tnow),
+  (1,'homepage','symbol', @tnow),
+  (1,'twitter','symbol', @tnow),
+  (1,'facebook','symbol', @tnow),
+  (1,'linkdin','symbol', @tnow);
 
 SET @year=1980;
 SET @cycle=0;
@@ -426,8 +428,6 @@ INSERT INTO `#__pv_seats`
 /* ==================== FK relationships ==================== */
 SET FOREIGN_KEY_CHECKS=0;
 
-
-
 /* ------------ pv_officers ------------ */
   /*
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -462,20 +462,19 @@ INSERT INTO `#__pv_officers`
       `#__pv_persons` p,
       `#__pv_seats` s
     WHERE
-      e.`id` = p.`old_id` and 
+      e.`id` = s.`old_id` and 
 
 /* had a problem getting id to correctly autoincrement
     -- specifying id using @rank from the previous query */
 INSERT INTO `#__pv_officers`
+  (`seat_id`, `party_id`, `person_id`, `first_elected_year`, `ordering`, `created`)
   SELECT 
     @rank:=@rank+1 AS `id`,
     s.`id` AS `seat_id`,
     (SELECT id FROM #__pv_parties where `name`='None') AS `party_id`,
     (SELECT id FROM #__pv_persons where `first_name`='Vacant') AS `person_id`,
-    31 AS `election_id`,
     @rank AS `ordering`,
-    @tnl AS `created`,
-    @tnl AS `updated`    
+    @tnl AS `created`    
   FROM
     `#__pv_seats` s, 
     `#__electedofficials` e
@@ -490,3 +489,4 @@ INSERT INTO `#__pv_officers`
 
 /* TODO: Migrate officers addresses */
 
+/* remove old_id */

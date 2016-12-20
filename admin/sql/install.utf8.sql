@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_cycles` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `description` text NOT NULL DEFAULT '',
-  `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `date` date NOT NULL DEFAULT '0000-00-00',
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -61,15 +61,6 @@ CREATE TABLE IF NOT EXISTS `#__pv_cycles` (
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-INSERT INTO `#__pv_cycles` values
-  ('', 1, 'First Cycle', '', 1, '', @tnl, @tnow, @tnow),
-  ('', 2, 'Second Cycle', '', 2, '', @tnl, @tnow, @tnow),
-  ('', 3, 'Third Cycle', '', 3, '', @tnl, @tnow, @tnow),
-  ('', 4, 'Fourth Cycle', '', 4, '', @tnl, @tnow, @tnow),
-  ('', 5, 'Fifth Cycle', '', 5, '', @tnl, @tnow, @tnow),
-  ('', 6, 'Sixth Cycle', '', 6, '', @tnl, @tnow, @tnow),
-  ('', 7, 'Seventh Cycle', '', 7, '', @tnl, @tnow, @tnow);
 
 CREATE TABLE IF NOT EXISTS `#__pv_cycle_year` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -83,7 +74,6 @@ CREATE TABLE IF NOT EXISTS `#__pv_cycle_year` (
   KEY `pv_cycle_year_cycle_id` (`cycle_id`),
   KEY `pv_cycle_year_year` (`year`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
 
 CREATE TABLE IF NOT EXISTS `#__pv_elections` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -200,7 +190,6 @@ CREATE TABLE IF NOT EXISTS `#__pv_parties` (
 CREATE TABLE IF NOT EXISTS `#__pv_persons` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `old_id` int(11) unsigned NOT NULL DEFAULT 0,
-  `old_table` varchar(100) NOT NULL DEFAULT '',
   `current_party_id` int(11) unsigned NOT NULL DEFAULT 0,
   `image` varchar(255) DEFAULT NULL,
   `prefix` varchar(25) DEFAULT NULL,
@@ -251,6 +240,27 @@ CREATE TABLE IF NOT EXISTS `#__pv_terms` (
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `description` text NOT NULL DEFAULT '',
+  `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+
+1INSERT INTO `#__pv_cycles` 
+  (`name`, `description`, `published`, `updated`)
+VALUES
+  (1, 'First Cycle', '', 1, '', @tnl, @tnow, @tnow),
+  (2, 'Second Cycle', '', 2, '', @tnl, @tnow, @tnow),
+  (3, 'Third Cycle', '', 3, '', @tnl, @tnow, @tnow),
+  (4, 'Fourth Cycle', '', 4, '', @tnl, @tnow, @tnow),
+  (5, 'Fifth Cycle', '', 5, '', @tnl, @tnow, @tnow),
+  (6, 'Sixth Cycle', '', 6, '', @tnl, @tnow, @tnow),
+  (7, 'Seventh Cycle', '', 7, '', @tnl, @tnow, @tnow);
 
 INSERT INTO `#__pv_link_types` 
   (`limit`, `name`, `prefer`, `created`)
@@ -312,14 +322,31 @@ VALUES
 UPDATE `#__pv_parties` set `ordering` = `id`;
 
 /* persons depends on parties*/
+/*
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `old_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `current_party_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `image` varchar(255) DEFAULT NULL,
+  `prefix` varchar(25) DEFAULT NULL,
+  `first_name` varchar(40) DEFAULT NULL,
+  `middle_name` varchar(40) DEFAULT NULL,
+  `last_name` varchar(40) DEFAULT NULL,
+  `suffix` varchar(25) DEFAULT NULL,
+  `gender` char(1) DEFAULT NULL,
+  `marital_status` char(1) DEFAULT NULL,
+  `bio` text NOT NULL DEFAULT '',
+  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+*/
 INSERT INTO `#__pv_persons` VALUES 
  ('', 0, '', 1, '', '', 'Vacant', '', '', '', '', '', '', 1, 0, @tnl, @tnow, @tnow);
 
 INSERT INTO `#__pv_persons`
   SELECT
-    '' AS `id`,
     `id` AS `old_id`,
-    'jos_electedofficials' AS `old_table`,
     (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(p.`name`,1)=`party`) AS `current_party_id`,
     '' AS `image`,
     '' AS `prefix`,
@@ -346,13 +373,8 @@ INSERT INTO `#__pv_persons`
       WHEN "Marian" THEN "f"
       ELSE "m"
     END AS `gender`,
-    '' AS `marital_status`,
-    '' AS `bio`,
     1 AS `published`,
-    0 AS `checked_out`,
-    @tnl AS checked_out_time,
-    @tnow AS `created`,
-    @tnow AS `updated`
+    @tnow AS `created`
     FROM `#__electedofficials` 
     WHERE 
       TRIM(`first_name`) NOT LIKE "VACANT" AND
@@ -470,7 +492,8 @@ INSERT INTO `#__pv_officers`
       `#__pv_persons` p,
       `#__pv_seats` s
     WHERE
-      e.`id` = s.`old_id` and 
+      e.`id` = s.`old_id` and
+      e.`id` = p.`old_id`; 
 
 /* had a problem getting id to correctly autoincrement
     -- specifying id using @rank from the previous query */

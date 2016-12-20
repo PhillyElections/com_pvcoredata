@@ -49,38 +49,6 @@ CREATE TABLE IF NOT EXISTS `#__pv_address_xrefs` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*CREATE TABLE IF NOT EXISTS `#__candidate_election` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `candidate_id` int(11) unsigned NOT NULL DEFAULT 0,
-  `election_id` int(11) unsigned NOT NULL DEFAULT 0,
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `pv_candidate_to_election_unique_id` (`candidate_id`,`election_id`),
-  KEY `pv_candidate_to_election_candidate_id` (`candidate_id`),
-  KEY `pv_candidate_to_election_election_id` (`election_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-*/
-CREATE TABLE IF NOT EXISTS `#__pv_candidates` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `seat_id` int(11) unsigned NOT NULL DEFAULT 0,
-  `party_id` int(11) unsigned NOT NULL DEFAULT 0,
-  `person_id` int(11) unsigned NOT NULL DEFAULT 0,
-  `year` int(11) unsigned NOT NULL DEFAULT 0,
-  `order` int(11) unsigned NOT NULL DEFAULT 0,
-  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
-  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `pv_candidates_unique_id` (`seat_id`,`person_id`,`party_id`,`year`),
-  KEY `pv_candidates_seat_id` (`seat_id`),
-  KEY `pv_candidates_person_id` (`person_id`),
-  KEY `pv_candidates_party_id` (`party_id`),
-  KEY `pv_candidates_year` (`year`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 CREATE TABLE IF NOT EXISTS `#__pv_cycles` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
@@ -134,6 +102,25 @@ CREATE TABLE IF NOT EXISTS `#__pv_elections` (
   PRIMARY KEY (`id`),
   KEY `pv_elections_year` (`year`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `#__pv_elections`
+  SELECT
+    '' AS `id`,
+    `id` AS `old_id`,
+    'jos_rt_election_year' AS `old_table`,
+    LEFT(TRIM(`e_year`), 4) AS `year`,
+    RIGHT(TRIM(`e_year`), LENGTH(TRIM(`e_year`)) -4 ) AS `name`,
+    '' AS `description`,
+    0 AS `is_special`,
+    1 AS `published`,
+    0 AS `is_current`,
+    `election_date` AS `date`,
+    0 AS `checked_out`,
+    @tnl AS `checked_out_time`,
+    @tnow AS `created`,
+    @tnow AS `updated`
+  FROM `#__rt_election_year`
+  ORDER BY `election_date` ASC;
 
 CREATE TABLE IF NOT EXISTS `#__pv_link_xrefs` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -225,6 +212,18 @@ CREATE TABLE IF NOT EXISTS `#__pv_offices` (
   PRIMARY KEY (`id`),
   KEY `pv_offices_level` (`level`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `#__pv_offices`
+(`name`, `level`, `published`, `created`)
+  SELECT DISTINCT 
+    `office` AS `name`, 
+    lower(`office_level`) AS `level`, 
+    1 AS `published`,
+    @tnow AS `created`
+  FROM `#__electedofficials`
+  order by `level`, `name`;
+
+UPDATE `#__pv_offices` SET `ordering`=`id`;
 
 CREATE TABLE IF NOT EXISTS `#__pv_parties` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -319,24 +318,6 @@ SET FOREIGN_KEY_CHECKS=0;
 
 /* ==================== dynamic data ==================== */
 /* ------------ pv_elections ------------ */
-INSERT INTO `#__pv_elections`
-  SELECT
-    '' AS `id`,
-    `id` AS `old_id`,
-    'jos_rt_election_year' AS `old_table`,
-    LEFT(TRIM(`e_year`), 4) AS `year`,
-    RIGHT(TRIM(`e_year`), LENGTH(TRIM(`e_year`)) -4 ) AS `name`,
-    '' AS `description`,
-    0 AS `is_special`,
-    1 AS `published`,
-    0 AS `is_current`,
-    `election_date` AS `date`,
-    0 AS `checked_out`,
-    @tnl AS `checked_out_time`,
-    @tnow AS `created`,
-    @tnow AS `updated`
-  FROM `#__rt_election_year`
-  ORDER BY `election_date` ASC;
 
 /* ------------ pv_cycles_year ------------ */
 /* there are up to 7 cycles per office in an active election year */

@@ -244,23 +244,22 @@ CREATE TABLE IF NOT EXISTS `#__pv_terms` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `description` text NOT NULL DEFAULT '',
-  `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 
-1INSERT INTO `#__pv_cycles` 
+INSERT INTO `#__pv_cycles` 
   (`name`, `description`, `published`, `updated`)
 VALUES
-  (1, 'First Cycle', '', 1, '', @tnl, @tnow, @tnow),
-  (2, 'Second Cycle', '', 2, '', @tnl, @tnow, @tnow),
-  (3, 'Third Cycle', '', 3, '', @tnl, @tnow, @tnow),
-  (4, 'Fourth Cycle', '', 4, '', @tnl, @tnow, @tnow),
-  (5, 'Fifth Cycle', '', 5, '', @tnl, @tnow, @tnow),
-  (6, 'Sixth Cycle', '', 6, '', @tnl, @tnow, @tnow),
-  (7, 'Seventh Cycle', '', 7, '', @tnl, @tnow, @tnow);
+  (1, 'First Cycle', 1, @tnow),
+  (2, 'Second Cycle', 1, @tnow),
+  (3, 'Third Cycle', 1, @tnow),
+  (4, 'Fourth Cycle', 1, @tnow),
+  (5, 'Fifth Cycle', 1, @tnow),
+  (6, 'Sixth Cycle', 1, @tnow),
+  (7, 'Seventh Cycle', 1, @tnow);
 
 INSERT INTO `#__pv_link_types` 
   (`limit`, `name`, `prefer`, `created`)

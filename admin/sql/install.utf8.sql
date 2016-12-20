@@ -15,7 +15,6 @@ DROP TABLE IF EXISTS `#__pv_persons`;
 DROP TABLE IF EXISTS `#__pv_seats`;
 DROP TABLE IF EXISTS `#__pv_terms`;
 
-
 /* ==================== constants ==================== */
 SET @tnow = NOW();
 SET @tnl  = '0000-00-00 00:00:00';

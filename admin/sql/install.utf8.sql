@@ -335,11 +335,10 @@ INSERT INTO `#__pv_persons` VALUES
  ('', 0, '', 1, '', '', 'Vacant', '', '', '', '', '', '', 1, 0, @tnl, @tnow, @tnow);
 
 INSERT INTO `#__pv_persons`
+  (`old_id`, `current_party_id`, `first_name`, `middle_name`, `last_name`, `suffix`, `gender`, `published`, `created`)
   SELECT
     `id` AS `old_id`,
     (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(p.`name`,1)=`party`) AS `current_party_id`,
-    '' AS `image`,
-    '' AS `prefix`,
     IFNULL(TRIM(`first_name`), '') AS `first_name`,
     IFNULL(REPLACE(TRIM(`middle_name`),'\.',''), '') AS `middle_name`,
     IFNULL(TRIM(`last_name`), '') AS `last_name`,

@@ -386,8 +386,8 @@ UPDATE `#__pv_terms` set `ordering` = `id`;
 /* seats depends of offices and terms */
 SET @rank=0;
 INSERT INTO `#__pv_seats`
+  (`term_id`, `old_id`, `office_id`, `ordering`, `district`, `published`, `created`)
   SELECT
-    '' AS `id`,
     CASE TRIM(`office`)
       WHEN "Attorney General" THEN 2
       WHEN "Auditor General" THEN 2
@@ -407,12 +407,10 @@ INSERT INTO `#__pv_seats`
       WHEN "State Treasurer" THEN 2
       WHEN "U.S. Representative" THEN 1
       WHEN "U.S. Senate" THEN IF(`next_election` % 3, 7, 6)
-    END AS term_id,
+    END AS `term_id`,
     `id` AS `old_id`,
-    'jos_electedofficials' AS `old_table`,
     (SELECT `id` FROM `#__pv_offices` o where o.`name`=`office`) as `office_id`,
     @rank:=@rank+1 AS `ordering`,
-    '' AS `description`,
     CONCAT_WS(
       '',
       TRIM(`congressional_district`),
@@ -422,10 +420,7 @@ INSERT INTO `#__pv_seats`
       IF(`office`='City Council At-Large','','')
     ) AS `district`,
     1 AS `published`,
-    0 AS `checked_out`,
-    @tnl AS checked_out_time,
-    @tnow AS `created`,
-    @tnow AS `updated`
+    @tnow AS `created`
     FROM `#__electedofficials` group by `id`;
 
 /* ==================== FK relationships ==================== */
@@ -463,11 +458,11 @@ INSERT INTO `#__pv_officers`
     @rank:=@rank+1 AS `ordering`,
     @tnow AS `created`
     FROM 
+      `#__electedofficials` e,
       `#__pv_persons` p,
       `#__pv_seats` s
     WHERE
       e.`id` = p.`old_id` and 
-      e.`id` = o.`old_id`;
 
 /* had a problem getting id to correctly autoincrement
     -- specifying id using @rank from the previous query */

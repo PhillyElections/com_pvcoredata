@@ -456,26 +456,25 @@ SET @rank=0;
 INSERT INTO `#__pv_officers` 
   (`seat_id`, `party_id`, `person_id`, `first_elected_year`, `ordering`, `created`)
   SELECT 
-    o.`id` AS `seat_id`,
+    s.`id` AS `seat_id`,
     p.`current_party_id` AS `party_id`,
     p.`id` AS `person_id`,
     e.`first_elected` as `first_elected_year`,
     @rank:=@rank+1 AS `ordering`,
     @tnow AS `created`
     FROM 
-      `#__pv_offices` o, 
       `#__pv_persons` p,
       `#__pv_seats` s
     WHERE
       e.`id` = p.`old_id` and 
-      p.`old_id` = o.`old_id`;
+      e.`id` = o.`old_id`;
 
 /* had a problem getting id to correctly autoincrement
     -- specifying id using @rank from the previous query */
 INSERT INTO `#__pv_officers`
   SELECT 
     @rank:=@rank+1 AS `id`,
-    o.`id` AS `office_id`,
+    s.`id` AS `seat_id`,
     (SELECT id FROM #__pv_parties where `name`='None') AS `party_id`,
     (SELECT id FROM #__pv_persons where `first_name`='Vacant') AS `person_id`,
     31 AS `election_id`,
@@ -483,7 +482,7 @@ INSERT INTO `#__pv_officers`
     @tnl AS `created`,
     @tnl AS `updated`    
   FROM
-    `#__pv_offices` o, 
+    `#__pv_seats` s, 
     `#__electedofficials` e
   WHERE 
     o.`old_id` = e.`id` AND

@@ -84,6 +84,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_cycle_year` (
   KEY `pv_cycle_year_year` (`year`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
+
 CREATE TABLE IF NOT EXISTS `#__pv_elections` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `old_id` int(11) unsigned NOT NULL DEFAULT 0,
@@ -102,25 +103,6 @@ CREATE TABLE IF NOT EXISTS `#__pv_elections` (
   PRIMARY KEY (`id`),
   KEY `pv_elections_year` (`year`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-INSERT INTO `#__pv_elections`
-  SELECT
-    '' AS `id`,
-    `id` AS `old_id`,
-    'jos_rt_election_year' AS `old_table`,
-    LEFT(TRIM(`e_year`), 4) AS `year`,
-    RIGHT(TRIM(`e_year`), LENGTH(TRIM(`e_year`)) -4 ) AS `name`,
-    '' AS `description`,
-    0 AS `is_special`,
-    1 AS `published`,
-    0 AS `is_current`,
-    `election_date` AS `date`,
-    0 AS `checked_out`,
-    @tnl AS `checked_out_time`,
-    @tnow AS `created`,
-    @tnow AS `updated`
-  FROM `#__rt_election_year`
-  ORDER BY `election_date` ASC;
 
 CREATE TABLE IF NOT EXISTS `#__pv_link_xrefs` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -151,16 +133,6 @@ CREATE TABLE IF NOT EXISTS `#__pv_link_types` (
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-INSERT INTO `#__pv_link_types` VALUES
-  ('', 3,'phone','','','','symbol', '','', @tnl, @tnow, @tnow),
-  ('', 1,'cell','','','','symbol', '','', @tnl, @tnow, @tnow),
-  ('', 1,'fax','','','','symbol', '','', @tnl, @tnow, @tnow),
-  ('', 1,'email','','','','symbol', '','', @tnl, @tnow, @tnow),
-  ('', 1,'homepage','','','','symbol', '','', @tnl, @tnow, @tnow),
-  ('', 1,'twitter','','','','symbol', '','', @tnl, @tnow, @tnow),
-  ('', 1,'facebook','','','','symbol','', '', @tnl, @tnow, @tnow),
-  ('', 1,'linkdin','','','','symbol','', '', @tnl, @tnow, @tnow);
 
 CREATE TABLE IF NOT EXISTS `#__pv_links` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -213,18 +185,6 @@ CREATE TABLE IF NOT EXISTS `#__pv_offices` (
   KEY `pv_offices_level` (`level`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-INSERT INTO `#__pv_offices`
-(`name`, `level`, `published`, `created`)
-  SELECT DISTINCT 
-    `office` AS `name`, 
-    lower(`office_level`) AS `level`, 
-    1 AS `published`,
-    @tnow AS `created`
-  FROM `#__electedofficials`
-  order by `level`, `name`;
-
-UPDATE `#__pv_offices` set `ordering` = `id`;
-
 CREATE TABLE IF NOT EXISTS `#__pv_parties` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
@@ -237,23 +197,6 @@ CREATE TABLE IF NOT EXISTS `#__pv_parties` (
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-INSERT INTO `#__pv_parties`
- (`name`, `abbr`, `published`, `created`)
-VALUES
-  ('None', 'None', 1, @tnow),
-  ('Democratic Party', 'Dem', 1, @tnow),
-  ('Republican Party', 'Rep', 1, @tnow),
-  ('Constitution Party', 'Con', 1, @tnow),
-  ('Free Dominion Party', 'Fre', 1, @tnow),
-  ('Green Party', 'Gre', 1, @tnow),
-  ('Independant', 'Ind', 1, @tnow),
-  ('Justice Party', 'Jus', 1, @tnow),
-  ('Libertarian Party', 'Lib', 1, @tnow),
-  ('Socialization & Liberation Party', 'Soc', 1, @tnow);
-
-UPDATE `#__pv_offices` set `ordering` = `id`;
-
 
 CREATE TABLE IF NOT EXISTS `#__pv_persons` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -310,78 +253,55 @@ CREATE TABLE IF NOT EXISTS `#__pv_terms` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `#__pv_terms` 
-  (`offset`, `length`, `name`, `published`, `created` )
-VALUES
-  (0, 2, '2-year, no offset', 1, @tnow),
-  (0, 6, '4-year, no offset', 1, @tnow),
-  (1, 4, '4-year, 1year offset', 1, @tnow),
-  (2, 4, '4-year, 2year offset', 1, @tnow),
-  (3, 4, '4-year, 3year offset', 1, @tnow),
-  (0, 6, '6-year, no offset', 1, @tnow),
-  (4, 6, '6-year, 4year offset', 1, @tnow);
+INSERT INTO `#__pv_link_types` VALUES
+  ('', 3,'phone','','','','symbol', '','', @tnl, @tnow, @tnow),
+  ('', 1,'cell','','','','symbol', '','', @tnl, @tnow, @tnow),
+  ('', 1,'fax','','','','symbol', '','', @tnl, @tnow, @tnow),
+  ('', 1,'email','','','','symbol', '','', @tnl, @tnow, @tnow),
+  ('', 1,'homepage','','','','symbol', '','', @tnl, @tnow, @tnow),
+  ('', 1,'twitter','','','','symbol', '','', @tnl, @tnow, @tnow),
+  ('', 1,'facebook','','','','symbol','', '', @tnl, @tnow, @tnow),
+  ('', 1,'linkdin','','','','symbol','', '', @tnl, @tnow, @tnow);
 
-UPDATE `#__pv_terms` set `ordering` = `id`;
-
-/* ==================== FK relationships ==================== */
-SET FOREIGN_KEY_CHECKS=0;
-
-
-/* ==================== dynamic data ==================== */
-/* ------------ pv_elections ------------ */
-
-/* ------------ pv_cycles_year ------------ */
-/* there are up to 7 cycles per office in an active election year */
 SET @year=1980;
 SET @cycle=0;
 
-/* ------------ pv_seats ------------ */
-SET @rank=0;
-INSERT INTO `#__pv_seats`
+INSERT INTO `#__pv_elections`
   SELECT
     '' AS `id`,
-    CASE TRIM(`office`)
-      WHEN "Attorney General" THEN 2
-      WHEN "Auditor General" THEN 2
-      WHEN "City Commissioner" THEN 5
-      WHEN "City Controller" THEN 3
-      WHEN "City Council At-Large" THEN 5
-      WHEN "City Council" THEN 5
-      WHEN "District Attorney" THEN 3
-      WHEN "Governor" THEN 4
-      WHEN "Lieutenant Governor" THEN 4
-      WHEN "Mayor" THEN 5
-      WHEN "President of the United States" THEN 2
-      WHEN "Register of Wills" THEN 5
-      WHEN "Sheriff" THEN 5
-      WHEN "State Representative" THEN 1
-      WHEN "State Senator" THEN IF(`state_senate_district` % 2, 2, 4)
-      WHEN "State Treasurer" THEN 2
-      WHEN "U.S. Representative" THEN 1
-      WHEN "U.S. Senate" THEN IF(`next_election` % 3, 7, 6)
-    END AS term_id,
     `id` AS `old_id`,
-    'jos_electedofficials' AS `old_table`,
-    (SELECT `id` FROM `#__pv_offices` o where o.`name`=`office`) as `office_id`,
-    @rank:=@rank+1 AS `ordering`,
+    'jos_rt_election_year' AS `old_table`,
+    LEFT(TRIM(`e_year`), 4) AS `year`,
+    RIGHT(TRIM(`e_year`), LENGTH(TRIM(`e_year`)) -4 ) AS `name`,
     '' AS `description`,
-    CONCAT_WS(
-      '',
-      TRIM(`congressional_district`),
-      TRIM(`state_senate_district`),
-      TRIM(`state_representative_district`),
-      TRIM(`council_district`),
-      IF(`office`='City Council At-Large','','')
-    ) AS `district`,
+    0 AS `is_special`,
     1 AS `published`,
+    0 AS `is_current`,
+    `election_date` AS `date`,
     0 AS `checked_out`,
-    @tnl AS checked_out_time,
+    @tnl AS `checked_out_time`,
     @tnow AS `created`,
     @tnow AS `updated`
-    FROM `#__electedofficials` group by `id`;
+  FROM `#__rt_election_year`
+  ORDER BY `election_date` ASC;
 
-/* ------------ pv_persons ------------ */
-/* "Vacant" person will be id=1*/
+INSERT INTO `#__pv_parties`
+ (`name`, `abbr`, `published`, `created`)
+VALUES
+  ('None', 'None', 1, @tnow),
+  ('Democratic Party', 'Dem', 1, @tnow),
+  ('Republican Party', 'Rep', 1, @tnow),
+  ('Constitution Party', 'Con', 1, @tnow),
+  ('Free Dominion Party', 'Fre', 1, @tnow),
+  ('Green Party', 'Gre', 1, @tnow),
+  ('Independant', 'Ind', 1, @tnow),
+  ('Justice Party', 'Jus', 1, @tnow),
+  ('Libertarian Party', 'Lib', 1, @tnow),
+  ('Socialization & Liberation Party', 'Soc', 1, @tnow);
+
+UPDATE `#__pv_parties` set `ordering` = `id`;
+
+/* persons depends on parties*/
 INSERT INTO `#__pv_persons` VALUES 
  ('', 0, '', 1, '', '', 'Vacant', '', '', '', '', '', '', 1, 0, @tnl, @tnow, @tnow);
 
@@ -438,87 +358,79 @@ UPDATE #__pv_persons
   WHERE
     `first_name` IN ('W. Wilson','R. Seth','W. Curtis');
 
-INSERT INTO #__pv_persons VALUES 
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Abbe'), TRIM(''), TRIM('Fletman'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='R'), '', '', TRIM('Al'), TRIM(''), TRIM('Taubenberger'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Alice'), TRIM('Beck'), TRIM('Dubow'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Allan'), TRIM(''), TRIM('Domb'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Anthony'), TRIM(''), TRIM('Kyriakakis'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Betsy'), TRIM(''), TRIM('Wahl'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Bill'), TRIM(''), TRIM('Green'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Brett'), TRIM(''), TRIM('Mandell'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Carla'), TRIM(''), TRIM('Cain'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Carol'), TRIM(''), TRIM('Jenkins'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='G'), '', '', TRIM('Cheri'), TRIM(''), TRIM('Honkala'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Chris'), TRIM(''), TRIM('Mallios'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Christine'), TRIM(''), TRIM('Hope'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='R'), '', '', TRIM('Christopher'), TRIM(''), TRIM('Sawyer'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='R'), '', '', TRIM('Daniel'), TRIM(''), TRIM('Tinney'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Dennis'), TRIM(''), TRIM('Lee'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Derek'), TRIM(''), TRIM('Green'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Donna'), TRIM(''), TRIM('DeRose'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Doug'), TRIM(''), TRIM('Oliver'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Edward'), TRIM(''), TRIM('Louden'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Frances'), TRIM(''), TRIM('Fattah'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Frank'), TRIM(''), TRIM('Rizzo'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('George'), TRIM(''), TRIM('Matysik'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Helen'), TRIM(''), TRIM('Gym'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Isaiah'), TRIM(''), TRIM('Thomas'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('James'), TRIM(''), TRIM('Berardinelli'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='R'), '', '', TRIM('James'), TRIM(''), TRIM('Williams'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Jenne'), TRIM(''), TRIM('Ayers'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Jennifer'), TRIM(''), TRIM('Schultz'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Jodi'), TRIM(''), TRIM('Lobel'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Joffie'), TRIM(''), TRIM('Pittman'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Joseph'), TRIM(''), TRIM('Guerra'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Joshua'), TRIM(''), TRIM('Hill'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Kai'), TRIM(''), TRIM('Scott'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Ken'), TRIM(''), TRIM('Trujillo'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Kenneth'), TRIM(''), TRIM('Powell'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Kevin'), TRIM('M'), TRIM('Dougherty'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='R'), '', '', TRIM('Kevin'), TRIM(''), TRIM('Strickland'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Kristin'), TRIM(''), TRIM('Combs'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Leon'), TRIM(''), TRIM('Goodman'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='I'), '', '', TRIM('Lillian'), TRIM(''), TRIM('Turner'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Lisa'), TRIM(''), TRIM('Deeley'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='R'), '', '', TRIM('Lou'), TRIM(''), TRIM('Lanni'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Lucretia'), TRIM(''), TRIM('Clemons'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Lynne'), TRIM(''), TRIM('Abraham'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Lyris'), TRIM(''), TRIM('Younge'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Manny'), TRIM(''), TRIM('Morales'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Mark'), TRIM(''), TRIM('Zecca'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Marnie'), TRIM('Aument'), TRIM('Loughery'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='R'), '', '', TRIM('Matt'), TRIM(''), TRIM('Wolfe'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Matthew'), TRIM(''), TRIM('Perks'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='R'), '', '', TRIM('Melissa'), TRIM('Murray'), TRIM('Bailey'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='F'), '', '', TRIM('Michael'), TRIM(''), TRIM('Galganski'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Michelle'), TRIM(''), TRIM('Brownlee'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Mike'), TRIM(''), TRIM('Fanning'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Nelson'), TRIM(''), TRIM('Diaz'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Omar'), TRIM(''), TRIM('Sabir'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Ori'), TRIM(''), TRIM('Feibush'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Paul'), TRIM(''), TRIM('Steinke'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Rainy'), TRIM(''), TRIM('Papademetriou'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Ronald'), TRIM(''), TRIM('Waters'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='R'), '', '', TRIM('Ross'), TRIM(''), TRIM('Feinberg'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Sabriya'), TRIM(''), TRIM('Bilal'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Scott'), TRIM(''), TRIM('DiClaudio'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Shanese'), TRIM(''), TRIM('Johnson'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Sharon'), TRIM('Williams'), TRIM('Lozier'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Sherman'), TRIM(''), TRIM('Toppin'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Sherrie'), TRIM(''), TRIM('Cohen'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Stephen'), TRIM(''), TRIM('Kinsey'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('T'), TRIM('Milton'), TRIM('Street'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Terry'), TRIM(''), TRIM('Gillen'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='R'), '', '', TRIM('Terry'), TRIM(''), TRIM('Tracy'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Tom'), TRIM(''), TRIM('Wyatt'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Tracey'), TRIM(''), TRIM('Gordon'), TRIM(''), 'f', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Vince'), TRIM(''), TRIM('Melchiorre'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Vincent'), TRIM(''), TRIM('Furlong'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Wayne'), TRIM(''), TRIM('Bennett'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Will'), TRIM(''), TRIM('Mega'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('William'), TRIM(''), TRIM('Ciancaglini'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW()),
-	('', 0, '', (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(`name`,1)='D'), '', '', TRIM('Wilson'), TRIM(''), TRIM('Alexander'), TRIM(''), 'm', 'm', '', 1, 0, '0000-00-00 00:00:00', NOW(), NOW());
+INSERT INTO `#__pv_offices`
+(`name`, `level`, `published`, `created`)
+  SELECT DISTINCT 
+    `office` AS `name`, 
+    lower(`office_level`) AS `level`, 
+    1 AS `published`,
+    @tnow AS `created`
+  FROM `#__electedofficials`
+  order by `level`, `name`;
+
+UPDATE `#__pv_offices` set `ordering` = `id`;
+
+INSERT INTO `#__pv_terms` 
+  (`offset`, `length`, `name`, `published`, `created` )
+VALUES
+  (0, 2, '2-year, no offset', 1, @tnow),
+  (0, 6, '4-year, no offset', 1, @tnow),
+  (1, 4, '4-year, 1year offset', 1, @tnow),
+  (2, 4, '4-year, 2year offset', 1, @tnow),
+  (3, 4, '4-year, 3year offset', 1, @tnow),
+  (0, 6, '6-year, no offset', 1, @tnow),
+  (4, 6, '6-year, 4year offset', 1, @tnow);
+
+UPDATE `#__pv_terms` set `ordering` = `id`;
+
+/* seats depends of offices and terms */
+SET @rank=0;
+INSERT INTO `#__pv_seats`
+  SELECT
+    '' AS `id`,
+    CASE TRIM(`office`)
+      WHEN "Attorney General" THEN 2
+      WHEN "Auditor General" THEN 2
+      WHEN "City Commissioner" THEN 5
+      WHEN "City Controller" THEN 3
+      WHEN "City Council At-Large" THEN 5
+      WHEN "City Council" THEN 5
+      WHEN "District Attorney" THEN 3
+      WHEN "Governor" THEN 4
+      WHEN "Lieutenant Governor" THEN 4
+      WHEN "Mayor" THEN 5
+      WHEN "President of the United States" THEN 2
+      WHEN "Register of Wills" THEN 5
+      WHEN "Sheriff" THEN 5
+      WHEN "State Representative" THEN 1
+      WHEN "State Senator" THEN IF(`state_senate_district` % 2, 2, 4)
+      WHEN "State Treasurer" THEN 2
+      WHEN "U.S. Representative" THEN 1
+      WHEN "U.S. Senate" THEN IF(`next_election` % 3, 7, 6)
+    END AS term_id,
+    `id` AS `old_id`,
+    'jos_electedofficials' AS `old_table`,
+    (SELECT `id` FROM `#__pv_offices` o where o.`name`=`office`) as `office_id`,
+    @rank:=@rank+1 AS `ordering`,
+    '' AS `description`,
+    CONCAT_WS(
+      '',
+      TRIM(`congressional_district`),
+      TRIM(`state_senate_district`),
+      TRIM(`state_representative_district`),
+      TRIM(`council_district`),
+      IF(`office`='City Council At-Large','','')
+    ) AS `district`,
+    1 AS `published`,
+    0 AS `checked_out`,
+    @tnl AS checked_out_time,
+    @tnow AS `created`,
+    @tnow AS `updated`
+    FROM `#__electedofficials` group by `id`;
+
+/* ==================== FK relationships ==================== */
+SET FOREIGN_KEY_CHECKS=0;
+
 
 
 /* ------------ pv_officers ------------ */

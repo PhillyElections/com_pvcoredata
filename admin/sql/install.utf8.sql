@@ -88,7 +88,6 @@ CREATE TABLE IF NOT EXISTS `#__pv_cycle_year` (
 CREATE TABLE IF NOT EXISTS `#__pv_elections` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `old_id` int(11) unsigned NOT NULL DEFAULT 0,
-  `old_table` varchar(255) DEFAULT NULL,
   `year` int(11) unsigned NOT NULL DEFAULT 0,
   `name` varchar(255) DEFAULT NULL,
   `description` text NOT NULL DEFAULT '',
@@ -267,23 +266,32 @@ VALUES
 
 SET @year=1980;
 SET @cycle=0;
-
+/*
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `old_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `year` int(11) unsigned NOT NULL DEFAULT 0,
+  `name` varchar(255) DEFAULT NULL,
+  `description` text NOT NULL DEFAULT '',
+  `is_special` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `is_current` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `date` date NOT NULL DEFAULT '0000-00-00',
+  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+*/
 INSERT INTO `#__pv_elections`
+  (`old_id`, `year`, `name`, `is_special`, `is_current`, `published`, `date`, `created`)
   SELECT
-    '' AS `id`,
     `id` AS `old_id`,
-    'jos_rt_election_year' AS `old_table`,
     LEFT(TRIM(`e_year`), 4) AS `year`,
     RIGHT(TRIM(`e_year`), LENGTH(TRIM(`e_year`)) -4 ) AS `name`,
-    '' AS `description`,
     0 AS `is_special`,
-    1 AS `published`,
     0 AS `is_current`,
+    1 AS `published`,
     `election_date` AS `date`,
-    0 AS `checked_out`,
-    @tnl AS `checked_out_time`,
-    @tnow AS `created`,
-    @tnow AS `updated`
+    @tnow AS `created`
   FROM `#__rt_election_year`
   ORDER BY `election_date` ASC;
 

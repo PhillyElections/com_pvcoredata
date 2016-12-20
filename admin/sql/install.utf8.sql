@@ -204,6 +204,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_offices` (
   `name` varchar(255) NOT NULL DEFAULT '',
   `description` text NOT NULL DEFAULT '',
   `level` enum('local','state','federal') DEFAULT 'local',
+  `ordering` int(11) unsigned NOT NULL DEFAULT 1,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',

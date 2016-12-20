@@ -46,32 +46,6 @@ CREATE TABLE IF NOT EXISTS `#__pv_address_xrefs` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `#__pv_cycles` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `description` text NOT NULL DEFAULT '',
-  `date` date NOT NULL DEFAULT '0000-00-00',
-  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
-  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `#__pv_cycle_year` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `cycle_id` int(11) unsigned NOT NULL DEFAULT 0,
-  `year` int(11) unsigned NOT NULL DEFAULT 0,
-  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `pv_cycle_to_election_unique_id` (`cycle_id`,`year`),
-  KEY `pv_cycle_year_cycle_id` (`cycle_id`),
-  KEY `pv_cycle_year_year` (`year`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
 CREATE TABLE IF NOT EXISTS `#__pv_elections` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `old_id` int(11) unsigned NOT NULL DEFAULT 0,
@@ -237,17 +211,6 @@ CREATE TABLE IF NOT EXISTS `#__pv_terms` (
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-INSERT INTO `#__pv_cycles` 
-  (`name`, `description`, `published`, `updated`)
-VALUES
-  (1, 'First Cycle', 1, @tnow),
-  (2, 'Second Cycle', 1, @tnow),
-  (3, 'Third Cycle', 1, @tnow),
-  (4, 'Fourth Cycle', 1, @tnow),
-  (5, 'Fifth Cycle', 1, @tnow),
-  (6, 'Sixth Cycle', 1, @tnow),
-  (7, 'Seventh Cycle', 1, @tnow);
 
 INSERT INTO `#__pv_link_types` 
   (`limit`, `name`, `prefer`, `created`)

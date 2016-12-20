@@ -351,7 +351,7 @@ INSERT INTO `#__pv_seats`
     END AS term_id,
     `id` AS `old_id`,
     'jos_electedofficials' AS `old_table`,
-    0 as `office_id`,
+    (SELECT `id` FROM `#__pv_offices` o where o.`name`=`office`) as `office_id`,
     @rank:=@rank+1 AS `order`,
     '' AS `description`,
     CONCAT_WS(
@@ -368,38 +368,6 @@ INSERT INTO `#__pv_seats`
     @tnow AS `created`,
     @tnow AS `updated`
     FROM `#__electedofficials` group by `id`;
-
-/*
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `order` int(11) unsigned NOT NULL DEFAULT 0,
-  `name` varchar(255) NOT NULL DEFAULT '',
-  `description` text NOT NULL DEFAULT '',
-  `level` enum('local','state','federal') DEFAULT 'local',
-  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
-  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-*/
-
-/* pv_offices */
-SET @rder=0;
-INSERT INTO `#__pv_offices`
-  (`name`, `level`, `published`, `check_out`, `checked_out_time`, `created`, `updated`)
-  SELECT DISTINCT
-    IF(`office`='City Council At-Large','City Council',`office`) AS `name`,
-    lower(`office_level`) AS `level`,
-    1 as `published`,
-    0 as `checked_out`,
-    @tnl as `checked_out_time`,
-    @tnow AS `created`,
-    @tnow AS `updated`
-  FROM 
-    `#__pv_seats` s,
-    `#__electedofficials` e
-  WHERE
-    s.old_id=e.id
-  ORDER BY e.`office`;
 
 /* ------------ pv_persons ------------ */
 /* "Vacant" person will be id=1*/

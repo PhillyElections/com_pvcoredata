@@ -1,7 +1,6 @@
 SET FOREIGN_KEY_CHECKS=0;
 
 DROP TABLE IF EXISTS `#__pv_address_xrefs`;
-DROP TABLE IF EXISTS `#__pv_address_to_seat`;
 DROP TABLE IF EXISTS `#__pv_addresses`;
 DROP TABLE IF EXISTS `#__pv_cycle_year`;
 DROP TABLE IF EXISTS `#__pv_cycles`;
@@ -16,7 +15,6 @@ DROP TABLE IF EXISTS `#__pv_persons`;
 DROP TABLE IF EXISTS `#__pv_seats`;
 DROP TABLE IF EXISTS `#__pv_terms`;
 
-SET FOREIGN_KEY_CHECKS=1;
 
 /* ==================== constants ==================== */
 SET @tnow = NOW();
@@ -464,13 +462,13 @@ INSERT INTO `#__pv_officers`
     e.`first_elected` as `first_elected_year`,
     @rank:=@rank+1 AS `ordering`,
     @tnow AS `created`
-    FROM 
-      `#__electedofficials` e,
-      `#__pv_persons` p,
-      `#__pv_seats` s
-    WHERE
-      e.`id` = s.`old_id` and
-      e.`id` = p.`old_id`; 
+  FROM 
+    `#__electedofficials` e,
+    `#__pv_persons` p,
+    `#__pv_seats` s
+  WHERE
+    e.`id` = s.`old_id` and
+    e.`id` = p.`old_id`; 
 
 /* candidates */
   
@@ -480,3 +478,5 @@ INSERT INTO `#__pv_officers`
 /* TODO: Migrate officers addresses */
 
 /* remove old_id */
+
+SET FOREIGN_KEY_CHECKS=1;

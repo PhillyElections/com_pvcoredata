@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_link_xrefs` (
   `link_id` int(11) unsigned NOT NULL DEFAULT 0,
   `right_id` int(11) unsigned NOT NULL DEFAULT 0,
   `table_id` int(11) unsigned NOT NULL DEFAULT 0,
-  `order` int(11) unsigned NOT NULL DEFAULT 0,
+  `ordering` int(11) unsigned NOT NULL DEFAULT 0,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -166,7 +166,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_links` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `type_id` int(11) unsigned NOT NULL DEFAULT 0,
   `value` varchar(255) DEFAULT NULL,
-  `order` int(11) unsigned NOT NULL DEFAULT 0,
+  `ordering` int(11) unsigned NOT NULL DEFAULT 0,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -184,7 +184,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_officers` (
   `attributes` text NOT NULL DEFAULT '',
   `first_elected_year` smallint(5) unsigned NOT NULL DEFAULT 0,
   `last_elected_year` smallint(5) unsigned NOT NULL DEFAULT 0,
-  `order` int(11) unsigned NOT NULL DEFAULT 0,
+  `ordering` int(11) unsigned NOT NULL DEFAULT 0,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -203,8 +203,8 @@ CREATE TABLE IF NOT EXISTS `#__pv_offices` (
   `name` varchar(255) NOT NULL DEFAULT '',
   `description` text NOT NULL DEFAULT '',
   `level` enum('local','state','federal') DEFAULT 'local',
-  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `ordering` int(11) unsigned NOT NULL DEFAULT 1,
+  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -229,6 +229,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_parties` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `abbr` varchar(10) DEFAULT NULL,
+  `ordering` int(11) unsigned NOT NULL DEFAULT 1,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -237,17 +238,22 @@ CREATE TABLE IF NOT EXISTS `#__pv_parties` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `#__pv_parties` VALUES
-  ('', 'None', 'None', '', '', @tnl, @tnow, @tnow),
-  ('', 'Democratic Party', 'Dem', '', '', @tnl, @tnow, @tnow),
-  ('', 'Republican Party', 'Rep', '', '', @tnl, @tnow, @tnow),
-  ('', 'Constitution Party', 'Con', '', '', @tnl, @tnow, @tnow),
-  ('', 'Free Dominion Party', 'Fre', '', '', @tnl, @tnow, @tnow),
-  ('', 'Green Party', 'Gre', '', '', @tnl, @tnow, @tnow),
-  ('', 'Independant', 'Ind', '', '', @tnl, @tnow, @tnow),
-  ('', 'Justice Party', 'Jus', '', '', @tnl, @tnow, @tnow),
-  ('', 'Libertarian Party', 'Lib', '', '', @tnl, @tnow, @tnow),
-  ('', 'Socialization & Liberation Party', 'Soc', '', '', @tnl, @tnow, @tnow);
+INSERT INTO `#__pv_parties`
+ (`name`, `abbr`, `published`, `created`)
+VALUES
+  ('None', 'None', 1, @tnow),
+  ('Democratic Party', 'Dem', 1, @tnow),
+  ('Republican Party', 'Rep', 1, @tnow),
+  ('Constitution Party', 'Con', 1, @tnow),
+  ('Free Dominion Party', 'Fre', 1, @tnow),
+  ('Green Party', 'Gre', 1, @tnow),
+  ('Independant', 'Ind', 1, @tnow),
+  ('Justice Party', 'Jus', 1, @tnow),
+  ('Libertarian Party', 'Lib', 1, @tnow),
+  ('Socialization & Liberation Party', 'Soc', 1, @tnow);
+
+UPDATE `#__pv_offices` set `ordering` = `id`;
+
 
 CREATE TABLE IF NOT EXISTS `#__pv_persons` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -278,9 +284,9 @@ CREATE TABLE IF NOT EXISTS `#__pv_seats` (
   `office_id` int(11) unsigned NOT NULL DEFAULT 0,
   `old_id` int(11) unsigned NOT NULL DEFAULT 0,
   `old_table` varchar(100) NOT NULL DEFAULT '',
-  `order` int(11) unsigned NOT NULL DEFAULT 0,
   `description` text NOT NULL DEFAULT '',
   `district` text NOT NULL DEFAULT '',
+  `ordering` int(11) unsigned NOT NULL DEFAULT 0,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -295,6 +301,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_terms` (
   `offset` int(11) unsigned NOT NULL DEFAULT 0,
   `length` int(11) unsigned NOT NULL DEFAULT 0,
   `name` varchar(255) DEFAULT NULL,
+  `ordering` int(11) unsigned NOT NULL DEFAULT 0,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -303,14 +310,18 @@ CREATE TABLE IF NOT EXISTS `#__pv_terms` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `#__pv_terms` VALUES
-  ('', 0, 2, '2-year, no offset', 1, 0, @tnl, @tnow, @tnow),
-  ('', 0, 6, '4-year, no offset', 1, 0, @tnl, @tnow, @tnow),
-  ('', 1, 4, '4-year, 1year offset', 1, 0, @tnl, @tnow, @tnow),
-  ('', 2, 4, '4-year, 2year offset', 1, 0, @tnl, @tnow, @tnow),
-  ('', 3, 4, '4-year, 3year offset', 1, 0, @tnl, @tnow, @tnow),
-  ('', 0, 6, '6-year, no offset', 1, 0, @tnl, @tnow, @tnow),
-  ('', 4, 6, '6-year, 4year offset', 1, 0, @tnl, @tnow, @tnow);
+INSERT INTO `#__pv_terms` 
+  (`offset`, `length`, `name`, `published`, `created` )
+VALUES
+  (0, 2, '2-year, no offset', 1, @tnow),
+  (0, 6, '4-year, no offset', 1, @tnow),
+  (1, 4, '4-year, 1year offset', 1, @tnow),
+  (2, 4, '4-year, 2year offset', 1, @tnow),
+  (3, 4, '4-year, 3year offset', 1, @tnow),
+  (0, 6, '6-year, no offset', 1, @tnow),
+  (4, 6, '6-year, 4year offset', 1, @tnow);
+
+UPDATE `#__pv_terms` set `ordering` = `id`;
 
 /* ==================== FK relationships ==================== */
 SET FOREIGN_KEY_CHECKS=0;
@@ -352,7 +363,7 @@ INSERT INTO `#__pv_seats`
     `id` AS `old_id`,
     'jos_electedofficials' AS `old_table`,
     (SELECT `id` FROM `#__pv_offices` o where o.`name`=`office`) as `office_id`,
-    @rank:=@rank+1 AS `order`,
+    @rank:=@rank+1 AS `ordering`,
     '' AS `description`,
     CONCAT_WS(
       '',
@@ -519,7 +530,7 @@ INSERT INTO #__pv_persons VALUES
   `attributes` text NOT NULL DEFAULT '',
   `first_elected_year` smallint(5) unsigned NOT NULL DEFAULT 0,
   `last_elected_year` smallint(5) unsigned NOT NULL DEFAULT 0,
-  `order` int(11) unsigned NOT NULL DEFAULT 0,
+  `ordering` int(11) unsigned NOT NULL DEFAULT 0,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -537,7 +548,7 @@ INSERT INTO `#__pv_officers`
     p.`current_party_id` AS `party_id`,
     p.`id` AS `person_id`,
     e.`first_elected` as `first_elected_year`,
-    @rank:=@rank+1 AS `order`,
+    @rank:=@rank+1 AS `ordering`,
     @tnow AS `created`,
     @tnow AS `updated`
     FROM 
@@ -557,7 +568,7 @@ INSERT INTO `#__pv_officers`
     (SELECT id FROM #__pv_parties where `name`='None') AS `party_id`,
     (SELECT id FROM #__pv_persons where `first_name`='Vacant') AS `person_id`,
     31 AS `election_id`,
-    @rank AS `order`,
+    @rank AS `ordering`,
     @tnl AS `created`,
     @tnl AS `updated`    
   FROM

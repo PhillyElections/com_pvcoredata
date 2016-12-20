@@ -474,7 +474,7 @@ INSERT INTO `#__pv_officers`
 
 /* had a problem getting id to correctly autoincrement
     -- specifying id using @rank from the previous query */
-INSERT INTO `#__pv_officers`
+/*INSERT INTO `#__pv_officers`
   (`seat_id`, `party_id`, `person_id`, `first_elected_year`, `ordering`, `created`)
   SELECT 
     @rank:=@rank+1 AS `id`,
@@ -488,7 +488,7 @@ INSERT INTO `#__pv_officers`
     `#__electedofficials` e
   WHERE 
     o.`old_id` = e.`id` AND
-    TRIM(e.`first_name`) LIKE "VACANT";
+    TRIM(e.`first_name`) LIKE "VACANT";*/
 
 /* candidates */
   

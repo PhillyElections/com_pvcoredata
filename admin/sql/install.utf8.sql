@@ -200,19 +200,18 @@ CREATE TABLE IF NOT EXISTS `#__pv_officers` (
 
 CREATE TABLE IF NOT EXISTS `#__pv_offices` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `order` int(11) unsigned NOT NULL DEFAULT 0,
   `name` varchar(255) NOT NULL DEFAULT '',
   `description` text NOT NULL DEFAULT '',
   `level` enum('local','state','federal') DEFAULT 'local',
-  `ordering` int(11) unsigned NOT NULL DEFAULT 1,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `ordering` int(11) unsigned NOT NULL DEFAULT 1,
   `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `pv_offices_level` (`level`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 INSERT INTO `#__pv_offices`
 (`name`, `level`, `published`, `created`)
@@ -224,7 +223,7 @@ INSERT INTO `#__pv_offices`
   FROM `#__electedofficials`
   order by `level`, `name`;
 
-UPDATE `#__pv_offices` SET `ordering`=`id`;
+UPDATE `#__pv_offices` set `ordering` = `id`;
 
 CREATE TABLE IF NOT EXISTS `#__pv_parties` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,

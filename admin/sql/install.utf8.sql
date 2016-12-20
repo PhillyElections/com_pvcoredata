@@ -454,15 +454,14 @@ SET FOREIGN_KEY_CHECKS=0;
 SET @rank=0; 
 
 INSERT INTO `#__pv_officers` 
+  (`seat_id`, `party_id`, `person_id`, `first_elected_year`, `ordering`, `created`)
   SELECT 
-    '' AS `id`,
     o.`id` AS `seat_id`,
     p.`current_party_id` AS `party_id`,
     p.`id` AS `person_id`,
     e.`first_elected` as `first_elected_year`,
     @rank:=@rank+1 AS `ordering`,
-    @tnow AS `created`,
-    @tnow AS `updated`
+    @tnow AS `created`
     FROM 
       `#__pv_offices` o, 
       `#__pv_persons` p,

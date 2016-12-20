@@ -362,8 +362,8 @@ INSERT INTO `#__pv_persons`
 /* correct some specific existing names */
 UPDATE #__pv_persons
   SET
-    `middle_name` = RIGHT(TRIM(`first_name`), LENGTH(TRIM(`first_name`))-3)
-    `first_name` = LEFT(TRIM(`first_name`),1),
+    `middle_name` = RIGHT(TRIM(`first_name`), LENGTH(TRIM(`first_name`))-3),
+    `first_name` = LEFT(TRIM(`first_name`),1)
   WHERE
     `first_name` IN ('W. Wilson','R. Seth','W. Curtis');
 

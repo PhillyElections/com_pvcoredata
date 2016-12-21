@@ -135,8 +135,6 @@ CREATE TABLE IF NOT EXISTS `#__pv_offices` (
   `name` varchar(255) NOT NULL DEFAULT '',
   `description` text NOT NULL DEFAULT '',
   `level` enum('local','state','federal') DEFAULT 'local',
-  `fees` float(10,4,) unsigned NOT NULL DEFAULT 0.00,
-  `signatures` int(6) unsigned NOT NULL DEFAULT 0,
   `ordering` int(11) unsigned NOT NULL DEFAULT 1,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
@@ -260,25 +258,7 @@ VALUES
 UPDATE `#__pv_parties` set `ordering` = `id`;
 
 /* persons depends on parties*/
-/*
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `old_id` int(11) unsigned NOT NULL DEFAULT 0,
-  `current_party_id` int(11) unsigned NOT NULL DEFAULT 0,
-  `image` varchar(255) DEFAULT NULL,
-  `prefix` varchar(25) DEFAULT NULL,
-  `first_name` varchar(40) DEFAULT NULL,
-  `middle_name` varchar(40) DEFAULT NULL,
-  `last_name` varchar(40) DEFAULT NULL,
-  `suffix` varchar(25) DEFAULT NULL,
-  `gender` char(1) DEFAULT NULL,
-  `marital_status` char(1) DEFAULT NULL,
-  `bio` text NOT NULL DEFAULT '',
-  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
-  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-*/
+
 INSERT INTO `#__pv_persons`
   (`old_id`, `current_party_id`, `first_name`, `published`, `created`)
 VALUES 
@@ -339,15 +319,6 @@ INSERT INTO `#__pv_offices`
   FROM `#__electedofficials`
   order by `level`, `name`;
 
-INSERT INTO `#__pv_offices` 
-(`name`, `level`, `published`, `created`)
-VALUES 
-(Office of Judge of Election  Ten   $0
-Inspector of Elections  Five  $0
-Delegate and Alternate Delegate to a National Party Convention  Two hundred and fifty   $25
-Member of State Committee   One hundred   $25
-Committeeperson);
-
 UPDATE `#__pv_offices` set `ordering` = `id`;
 
 INSERT INTO `#__pv_terms` 
@@ -403,27 +374,7 @@ INSERT INTO `#__pv_seats`
     @tnow AS `created`
     FROM `#__electedofficials` group by `id`;
 
-/* ==================== FK relationships ==================== */
-SET FOREIGN_KEY_CHECKS=0;
-
 /* ------------ pv_officers ------------ */
-  /*
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `seat_id` int(11) unsigned NOT NULL DEFAULT 0,
-  `party_id` int(11) unsigned NOT NULL DEFAULT 0,
-  `person_id` int(11) unsigned NOT NULL DEFAULT 0,
-  `attributes` text NOT NULL DEFAULT '',
-  `first_elected_year` smallint(5) unsigned NOT NULL DEFAULT 0,
-  `last_elected_year` smallint(5) unsigned NOT NULL DEFAULT 0,
-  `ordering` int(11) unsigned NOT NULL DEFAULT 0,
-  `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
-  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-*/
-/* TODO: refactor the next two into one... 
-    will require an outer join to pv_persons and inner to electedofficials */
 SET @rank=0; 
 
 INSERT INTO `#__pv_officers` 
@@ -451,5 +402,9 @@ INSERT INTO `#__pv_officers`
 /* TODO: Migrate officers addresses */
 
 /* remove old_id */
+
+/* ==================== FK relationships ==================== */
+
+/* ==================== Done ==================== */
 
 SET FOREIGN_KEY_CHECKS=1;

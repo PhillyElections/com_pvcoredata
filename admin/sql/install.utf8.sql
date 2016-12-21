@@ -135,6 +135,8 @@ CREATE TABLE IF NOT EXISTS `#__pv_offices` (
   `name` varchar(255) NOT NULL DEFAULT '',
   `description` text NOT NULL DEFAULT '',
   `level` enum('local','state','federal') DEFAULT 'local',
+  `fees` float(10,4,) unsigned NOT NULL DEFAULT 0.00,
+  `signatures` int(6) unsigned NOT NULL DEFAULT 0,
   `ordering` int(11) unsigned NOT NULL DEFAULT 1,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
@@ -336,6 +338,15 @@ INSERT INTO `#__pv_offices`
     @tnow AS `created`
   FROM `#__electedofficials`
   order by `level`, `name`;
+
+INSERT INTO `#__pv_offices` 
+(`name`, `level`, `published`, `created`)
+VALUES 
+(Office of Judge of Election  Ten   $0
+Inspector of Elections  Five  $0
+Delegate and Alternate Delegate to a National Party Convention  Two hundred and fifty   $25
+Member of State Committee   One hundred   $25
+Committeeperson);
 
 UPDATE `#__pv_offices` set `ordering` = `id`;
 

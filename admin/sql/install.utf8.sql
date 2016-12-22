@@ -135,6 +135,8 @@ CREATE TABLE IF NOT EXISTS `#__pv_offices` (
   `name` varchar(255) NOT NULL DEFAULT '',
   `description` text NOT NULL DEFAULT '',
   `level` enum('local','state','federal') DEFAULT 'local',
+  `fees` float(10,4,) unsigned NOT NULL DEFAULT 0.00,
+  `signatures` int(6) unsigned NOT NULL DEFAULT 0,
   `ordering` int(11) unsigned NOT NULL DEFAULT 1,
   `published` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `checked_out` int(11) unsigned NOT NULL DEFAULT 0,
@@ -258,7 +260,6 @@ VALUES
 UPDATE `#__pv_parties` set `ordering` = `id`;
 
 /* persons depends on parties*/
-
 INSERT INTO `#__pv_persons`
   (`old_id`, `current_party_id`, `first_name`, `published`, `created`)
 VALUES 
@@ -319,8 +320,48 @@ INSERT INTO `#__pv_offices`
   FROM `#__electedofficials`
   order by `level`, `name`;
 
+INSERT INTO `#__pv_offices`
+(`name`, `level`, `published`, `created`)
+VALUES
+('Committeeperson', 'local', 1, @tnow),
+('Delegate', 'state', 1, @tnow),
+('Alternate Delegate', 'state', 1, @tnow),
+('Minority Inspector', 'local', 1, @tnow),
+('Majority Inspector', 'local', 1, @tnow),
+('Judge of the Commonwealth Court', 'state', 1, @tnow),
+('Judge of the Court of Common Pleas', 'state', 1, @tnow),
+('Judge of the Municipal Court', 'state', 1, @tnow),
+('Judge of the Superior Court', 'state', 1, @tnow),
+('Justice of the Supreme Court', 'state', 1, @tnow),
+('Member of State Committee', 'state', 1, @tnow),
+('Office of Judge of Election', 'local', 1, @tnow);
+
 UPDATE `#__pv_offices` set `ordering` = `id`;
 
+/* set nomination petition data */
+/*
+  President of the United States
+  U.S. Representative
+  U.S. Senate
+  City Commissioner
+  City Controller
+  City Council
+  City Council At-Large
+  District Attorney
+  Mayor
+  Register of Wills
+  Sheriff
+  Attorney General
+  Auditor General
+  Governor
+  Lieutenant Governor
+  State Representative
+  State Senator
+  State Treasurer
+*/
+UPDATE `#__pv_offices` set `fees` = , `signatures` = ;
+
+/* ===================== pv_terms ===================== */
 INSERT INTO `#__pv_terms` 
   (`offset`, `length`, `name`, `published`, `created` )
 VALUES
@@ -374,6 +415,9 @@ INSERT INTO `#__pv_seats`
     @tnow AS `created`
     FROM `#__electedofficials` group by `id`;
 
+/* ==================== FK relationships ==================== */
+SET FOREIGN_KEY_CHECKS=0;
+
 /* ------------ pv_officers ------------ */
 SET @rank=0; 
 
@@ -394,9 +438,6 @@ INSERT INTO `#__pv_officers`
     e.`id` = s.`old_id` and
     e.`id` = p.`old_id`; 
 
-/* candidates */
-  
- 
 /* TODO: Migrate office addresses */
 
 /* TODO: Migrate officers addresses */

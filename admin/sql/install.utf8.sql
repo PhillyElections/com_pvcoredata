@@ -163,7 +163,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_parties` (
 CREATE TABLE IF NOT EXISTS `#__pv_persons` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `old_id` int(11) unsigned NOT NULL DEFAULT 0,
-  `current_party_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `party_id` int(11) unsigned NOT NULL DEFAULT 0,
   `image` varchar(255) DEFAULT NULL,
   `prefix` varchar(25) DEFAULT NULL,
   `first_name` varchar(40) DEFAULT NULL,
@@ -200,6 +200,14 @@ CREATE TABLE IF NOT EXISTS `#__pv_seats` (
   KEY `pv_seats_term_id` (`term_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS `#__pv_tables` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS `#__pv_terms` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `offset` int(11) unsigned NOT NULL DEFAULT 0,
@@ -213,6 +221,44 @@ CREATE TABLE IF NOT EXISTS `#__pv_terms` (
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+ALTER TABLE `#__pv_address_xrefs`
+  ADD CONSTRAINT `fk_pv_address_xrefs_address_id`
+  FOREIGN KEY (`address_id`) REFERENCES `#__pv_addresses`(`id`)
+  ON DELETE SET NULL
+  ON UPDATE CASCADE;
+ALTER TABLE `#__pv_links`
+  ADD CONSTRAINT `fk_pv_links_type_id`
+  FOREIGN KEY (`type_id`) REFERENCES `#__pv_link_types`(`id`)
+  ON DELETE SET NULL
+  ON UPDATE CASCADE;
+ALTER TABLE `#__pv_officer`
+  ADD CONSTRAINT `fk_pv_officers_seats_id`
+  FOREIGN KEY (`seat_id`) REFERENCES `#__pv_seats`(`id`)
+  ON DELETE SET NULL
+  ON UPDATE CASCADE
+, ADD CONSTRAINT `fk_pv_officers_party_id`
+  FOREIGN KEY (`party_id`) REFERENCES `#__pv_parties`(`id`)
+  ON DELETE SET NULL
+  ON UPDATE CASCADE
+, ADD CONSTRAINT `fk_pv_officers_person_id`
+  FOREIGN KEY (`person_id`) REFERENCES `#__pv_persons`(`id`)
+  ON DELETE SET NULL
+  ON UPDATE CASCADE;
+ALTER TABLE `#__pv_persons`
+  ADD CONSTRAINT `fk_pv_persons_party_id`
+  FOREIGN KEY (`party_id`) REFERENCES `#__pv_parties`(`id`)
+  ON DELETE SET NULL
+  ON UPDATE CASCADE;
+ALTER TABLE `#__pv_seats`
+  ADD CONSTRAINT `fk_pv_seats_term_id`
+  FOREIGN KEY (`term_id`) REFERENCES `#__pv_terms`(`id`)
+  ON DELETE SET NULL
+  ON UPDATE CASCADE
+, ADD CONSTRAINT `fk_pv_seats_office_id`
+  FOREIGN KEY (`office_id`) REFERENCES `#__pv_office`(`id`)
+  ON DELETE SET NULL
+  ON UPDATE CASCADE;
 
 INSERT INTO `#__pv_link_types` 
   (`limit`, `name`, `prefer`, `created`)

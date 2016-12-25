@@ -267,15 +267,15 @@ UPDATE `#__pv_parties` set `ordering` = `id`;
 
 /* persons depends on parties*/
 INSERT INTO `#__pv_persons`
-  (`old_id`, `current_party_id`, `first_name`, `published`, `created`)
+  (`old_id`, `party_id`, `first_name`, `published`, `created`)
 VALUES 
   (0, 1, 'Vacant', 1, @tnow);
 
 INSERT INTO `#__pv_persons`
-  (`old_id`, `current_party_id`, `first_name`, `middle_name`, `last_name`, `suffix`, `gender`, `published`, `created`)
+  (`old_id`, `party_id`, `first_name`, `middle_name`, `last_name`, `suffix`, `gender`, `published`, `created`)
   SELECT
     `id` AS `old_id`,
-    (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(p.`name`,1)=`party`) AS `current_party_id`,
+    (SELECT `id` FROM `#__pv_parties` p WHERE LEFT(p.`name`,1)=`party`) AS `party_id`,
     IFNULL(TRIM(`first_name`), '') AS `first_name`,
     IFNULL(REPLACE(TRIM(`middle_name`),'\.',''), '') AS `middle_name`,
     IFNULL(TRIM(`last_name`), '') AS `last_name`,
@@ -431,7 +431,7 @@ INSERT INTO `#__pv_officers`
   (`seat_id`, `party_id`, `person_id`, `first_elected_year`, `ordering`, `created`)
   SELECT 
     s.`id` AS `seat_id`,
-    p.`current_party_id` AS `party_id`,
+    p.`party_id` AS `party_id`,
     p.`id` AS `person_id`,
     e.`first_elected` as `first_elected_year`,
     @rank:=@rank+1 AS `ordering`,

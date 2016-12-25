@@ -177,7 +177,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_persons` (
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `pv_persons_current_party_id` (`current_party_id`)
+  KEY `pv_persons_party_id` (`party_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_seats` (

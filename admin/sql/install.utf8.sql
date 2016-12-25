@@ -365,8 +365,8 @@ UPDATE `#__pv_offices` set `ordering` = `id`;
   State Senator
   State Treasurer
 */
-UPDATE `#__pv_offices` set `fees` = , `signatures` = ;
-
+/*UPDATE `#__pv_offices` set `fees` = , `signatures` = ;
+*/
 /* ===================== pv_terms ===================== */
 INSERT INTO `#__pv_terms` 
   (`offset`, `length`, `name`, `published`, `created` )

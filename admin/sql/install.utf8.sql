@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_elections` (
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `pv_elections_year` (`year`)
-) ENGINE=ARIA  DEFAULT CHARSET=utf8;
+) ENGINE=ARIA DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_link_xrefs` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_link_types` (
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=ARIA  DEFAULT CHARSET=utf8;
+) ENGINE=ARIA DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_links` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -132,7 +132,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_officers` (
   KEY `pv_officers_person_id` (`person_id`),
   KEY `pv_officers_party_id` (`party_id`),
   KEY `pv_officers_first_year` (`first_elected_year`)
-) ENGINE=ARIA  DEFAULT CHARSET=utf8;
+) ENGINE=ARIA DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_offices` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -147,7 +147,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_offices` (
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `pv_offices_level` (`level`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=ARIA DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_parties` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_parties` (
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=ARIA  DEFAULT CHARSET=utf8;
+) ENGINE=ARIA DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_persons` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -182,7 +182,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_persons` (
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `pv_persons_party_id` (`party_id`)
-) ENGINE=ARIA  DEFAULT CHARSET=utf8;
+) ENGINE=ARIA DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_seats` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -200,7 +200,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_seats` (
   PRIMARY KEY (`id`),
   KEY `pv_seats_office_id` (`office_id`),
   KEY `pv_seats_term_id` (`term_id`)
-) ENGINE=ARIA  DEFAULT CHARSET=utf8;
+) ENGINE=ARIA DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_tables` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -208,7 +208,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_tables` (
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=ARIA  DEFAULT CHARSET=utf8;
+) ENGINE=ARIA DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_terms` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -222,7 +222,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_terms` (
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=ARIA  DEFAULT CHARSET=utf8;
+) ENGINE=ARIA DEFAULT CHARSET=utf8;
 
 INSERT INTO `#__pv_tables` 
   (`name`, `created`) 

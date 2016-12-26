@@ -458,6 +458,7 @@ ALTER TABLE `#__pv_seats`
   DROP COLUMN `old_id`;
 
 /* ==================== FK relationships ==================== */
+
 ALTER TABLE `#__pv_address_xrefs`
   ADD CONSTRAINT `fk_pv_address_xrefs_address_id`
   FOREIGN KEY (`address_id`) REFERENCES `#__pv_addresses`(`id`)
@@ -495,6 +496,7 @@ ALTER TABLE `#__pv_seats`
   FOREIGN KEY (`office_id`) REFERENCES `#__pv_office`(`id`)
   ON DELETE SET NULL
   ON UPDATE CASCADE;
+
 
 /* ==================== Done ==================== */
 

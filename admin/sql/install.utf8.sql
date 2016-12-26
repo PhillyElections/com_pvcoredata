@@ -225,7 +225,8 @@ CREATE TABLE IF NOT EXISTS `#__pv_terms` (
 ) ENGINE=ARIA  DEFAULT CHARSET=utf8;
 
 /* let's insert tables */
-SET @query=CONCAT(
+SET @query=CONCAT_WS(
+  '',
   'INSERT INTO `#__pv_tables` ',
   '(`name`, `created`) ',
   'SELECT `table_name` as `name`, "',

@@ -44,7 +44,8 @@ CREATE TABLE IF NOT EXISTS `#__pv_address_xrefs` (
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `pv_address_xrefs_address_id` (`address_id`)
+  KEY `pv_address_xrefs_address_id` (`address_id`),
+  KEY `pv_address_xrefs_right_id` (`right_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_elections` (

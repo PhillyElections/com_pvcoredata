@@ -222,6 +222,12 @@ CREATE TABLE IF NOT EXISTS `#__pv_terms` (
   PRIMARY KEY (`id`)
 ) ENGINE=ARIA  DEFAULT CHARSET=utf8;
 
+
+/* let's insert those tables */
+@db_name = SELECT DATABASE();
+INSERT INTO #__pv_tables
+SELECT `table_name` FROM information_schema.tables WHERE table_schema='@db_name' AND `table_name` like "%_pv_%";
+
 INSERT INTO `#__pv_link_types` 
   (`limit`, `name`, `prefer`, `created`)
 VALUES

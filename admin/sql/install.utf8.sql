@@ -230,7 +230,7 @@ INSERT INTO `#__pv_tables`
   `table_name` as `name`, 
   @tnow as `created` 
   FROM `information_schema`.`tables` 
-  WHERE `table_schema`=@db AND `table_name` like "%_pv_%";
+  WHERE `table_schema`=@db AND `table_name` LIKE "%_pv_%";
 
 PREPARE stmt FROM @query;
 EXECUTE stmt;

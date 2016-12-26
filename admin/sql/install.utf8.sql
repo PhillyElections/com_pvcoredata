@@ -318,12 +318,11 @@ INSERT INTO `#__pv_persons`
     ORDER BY TRIM(`first_name`) ASC, TRIM(`last_name`) ASC;
 
 /* correct some specific existing names */
-UPDATE #__pv_persons
-  SET
-    `middle_name` = RIGHT(TRIM(`first_name`), LENGTH(TRIM(`first_name`))-3),
-    `first_name` = LEFT(TRIM(`first_name`),1)
-  WHERE
-    `first_name` IN ('W. Wilson','R. Seth','W. Curtis');
+UPDATE #__pv_persons SET
+  `middle_name` = RIGHT(TRIM(`first_name`), LENGTH(TRIM(`first_name`))-3),
+  `first_name` = LEFT(TRIM(`first_name`),1)
+WHERE
+  `first_name` IN ('W. Wilson','R. Seth','W. Curtis');
 
 INSERT INTO `#__pv_offices`
 (`name`, `level`, `published`, `created`)
@@ -336,20 +335,20 @@ INSERT INTO `#__pv_offices`
   order by `level`, `name`;
 
 INSERT INTO `#__pv_offices`
-(`name`, `level`, `published`, `created`)
+  (`name`, `level`, `published`, `created`)
 VALUES
-('Committeeperson', 'ward', 1, @tnow),
-('Delegate', 'state', 1, @tnow),
-('Alternate Delegate', 'state', 1, @tnow),
-('Minority Inspector', 'ward', 1, @tnow),
-('Majority Inspector', 'ward', 1, @tnow),
-('Judge of the Commonwealth Court', 'state', 1, @tnow),
-('Judge of the Court of Common Pleas', 'state', 1, @tnow),
-('Judge of the Municipal Court', 'state', 1, @tnow),
-('Judge of the Superior Court', 'state', 1, @tnow),
-('Justice of the Supreme Court', 'state', 1, @tnow),
-('Member of State Committee', 'state', 1, @tnow),
-('Office of Judge of Election', 'ward', 1, @tnow);
+  ('Committeeperson', 'ward', 1, @tnow),
+  ('Delegate', 'state', 1, @tnow),
+  ('Alternate Delegate', 'state', 1, @tnow),
+  ('Minority Inspector', 'ward', 1, @tnow),
+  ('Majority Inspector', 'ward', 1, @tnow),
+  ('Judge of the Commonwealth Court', 'state', 1, @tnow),
+  ('Judge of the Court of Common Pleas', 'state', 1, @tnow),
+  ('Judge of the Municipal Court', 'state', 1, @tnow),
+  ('Judge of the Superior Court', 'state', 1, @tnow),
+  ('Justice of the Supreme Court', 'state', 1, @tnow),
+  ('Member of State Committee', 'state', 1, @tnow),
+  ('Office of Judge of Election', 'ward', 1, @tnow);
 
 UPDATE `#__pv_offices` set `ordering` = `id`;
 

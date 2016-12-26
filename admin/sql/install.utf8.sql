@@ -237,9 +237,19 @@ DEALLOCATE PREPARE stmt
 
 /* let's insert tables */
 @db_name = SELECT DATABASE();
-INSERT INTO `#__pv_tables`
-  (`name`, `created`)
-SELECT `table_name` as `name`, @tnow as `created` FROM information_schema.tables WHERE table_schema=CONCAT(@db_name,'') AND `table_name` like "%_pv_%";
+SET @query = CONCAT(
+  'INSERT INTO `#__pv_tables` ',
+  '(`name`, `created`) ',
+  'SELECT `table_name` as `name`, ',
+  @tnow,
+  ' as `created` FROM information_schema.tables WHERE table_schema=',
+  @db_name,
+  ' AND `table_name` like "%_pv_%"'
+);
+
+PREPARE stmt FROM @query;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt
 
 INSERT INTO `#__pv_link_types` 
   (`limit`, `name`, `prefer`, `created`)

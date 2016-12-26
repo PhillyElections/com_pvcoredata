@@ -224,17 +224,13 @@ CREATE TABLE IF NOT EXISTS `#__pv_terms` (
   PRIMARY KEY (`id`)
 ) ENGINE=ARIA  DEFAULT CHARSET=utf8;
 
-/* let's insert tables */
-SET @query=CONCAT_WS(
-  '',
-  'INSERT INTO `#__pv_tables` ',
-  '(`name`, `created`) ',
-  'SELECT `table_name` as `name`, "',
-  @tnow,
-  '" as `created` FROM information_schema.tables WHERE table_schema="',
-  @db,
-  '" AND `table_name` like "%_pv_%"'
-);
+INSERT INTO `#__pv_tables` 
+  (`name`, `created`) 
+  SELECT 
+  `table_name` as `name`, 
+  @tnow as `created` 
+  FROM `information_schema`.`tables` 
+  WHERE `table_schema`=@db AND `table_name` like "%_pv_%";
 
 PREPARE stmt FROM @query;
 EXECUTE stmt;

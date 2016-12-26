@@ -353,28 +353,6 @@ VALUES
 
 UPDATE `#__pv_offices` set `ordering` = `id`;
 
-/* set nomination petition data 
-
-  President of the United States
-  U.S. Representative
-  U.S. Senate
-  City Commissioner
-  City Controller
-  City Council
-  City Council At-Large
-  District Attorney
-  Mayor
-  Register of Wills
-  Sheriff
-  Attorney General
-  Auditor General
-  Governor
-  Lieutenant Governor
-  State Representative
-  State Senator
-  State Treasurer
-*/
-
 /* ===================== pv_terms ===================== */
 INSERT INTO `#__pv_terms` 
   (`offset`, `length`, `name`, `published`, `created` )

@@ -281,7 +281,7 @@ UPDATE `#__pv_parties` set `ordering` = `id`;
 INSERT INTO `#__pv_persons`
   (`old_id`, `party_id`, `first_name`, `published`, `created`)
 VALUES 
-  (0, 1, 'Vacant', 1, @tnow);
+  (0, 1, 'VACANT', 1, @tnow);
 
 INSERT INTO `#__pv_persons`
   (`old_id`, `party_id`, `first_name`, `middle_name`, `last_name`, `suffix`, `gender`, `published`, `created`)

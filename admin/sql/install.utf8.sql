@@ -227,7 +227,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_terms` (
 @db_name = SELECT DATABASE();
 INSERT INTO `#__pv_tables`
   (`name`, `created`)
-SELECT `table_name` as `name`, @tnow as `created` FROM information_schema.tables WHERE table_schema='@db_name' AND `table_name` like "%_pv_%";
+SELECT `table_name` as `name`, @tnow as `created` FROM information_schema.tables WHERE table_schema=@db_name AND `table_name` like "%_pv_%";
 
 INSERT INTO `#__pv_link_types` 
   (`limit`, `name`, `prefer`, `created`)

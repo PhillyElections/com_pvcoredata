@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_link_xrefs` (
 
 CREATE TABLE IF NOT EXISTS `#__pv_link_types` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `limit` int(11) DEFAULT '0' COMMENT '0 for no limit, 1 or greater for a specific limit',
+  `limit` smallint(5) DEFAULT 0 COMMENT '0 for no limit, 1 or greater for a specific limit',
   `name` varchar(255) DEFAULT NULL,
   `symbol` varchar(20) DEFAULT NULL COMMENT 'html code',
   `glyph` varchar(20) DEFAULT NULL COMMENT 'favicon definition',

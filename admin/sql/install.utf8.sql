@@ -331,18 +331,18 @@ INSERT INTO `#__pv_offices`
 INSERT INTO `#__pv_offices`
 (`name`, `level`, `published`, `created`)
 VALUES
-('Committeeperson', 'local', 1, @tnow),
+('Committeeperson', 'ward', 1, @tnow),
 ('Delegate', 'state', 1, @tnow),
 ('Alternate Delegate', 'state', 1, @tnow),
-('Minority Inspector', 'local', 1, @tnow),
-('Majority Inspector', 'local', 1, @tnow),
+('Minority Inspector', 'ward', 1, @tnow),
+('Majority Inspector', 'ward', 1, @tnow),
 ('Judge of the Commonwealth Court', 'state', 1, @tnow),
 ('Judge of the Court of Common Pleas', 'state', 1, @tnow),
 ('Judge of the Municipal Court', 'state', 1, @tnow),
 ('Judge of the Superior Court', 'state', 1, @tnow),
 ('Justice of the Supreme Court', 'state', 1, @tnow),
 ('Member of State Committee', 'state', 1, @tnow),
-('Office of Judge of Election', 'local', 1, @tnow);
+('Office of Judge of Election', 'ward', 1, @tnow);
 
 UPDATE `#__pv_offices` set `ordering` = `id`;
 

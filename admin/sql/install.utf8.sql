@@ -232,10 +232,6 @@ INSERT INTO `#__pv_tables`
   FROM `information_schema`.`tables` 
   WHERE `table_schema`=@db AND `table_name` LIKE "%_pv_%";
 
-PREPARE stmt FROM @query;
-EXECUTE stmt;
-DEALLOCATE PREPARE stmt
-
 INSERT INTO `#__pv_link_types` 
   (`limit`, `name`, `prefer`, `created`)
 VALUES

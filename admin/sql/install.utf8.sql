@@ -13,6 +13,7 @@ DROP TABLE IF EXISTS `#__pv_offices`;
 DROP TABLE IF EXISTS `#__pv_parties`;
 DROP TABLE IF EXISTS `#__pv_persons`;
 DROP TABLE IF EXISTS `#__pv_seats`;
+DROP TABLE IF EXISTS `#__pv_tables`;
 DROP TABLE IF EXISTS `#__pv_terms`;
 
 /* ==================== constants ==================== */

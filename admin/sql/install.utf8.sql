@@ -469,7 +469,7 @@ ALTER TABLE `#__pv_links`
   FOREIGN KEY (`type_id`) REFERENCES `#__pv_link_types`(`id`)
   ON DELETE SET NULL
   ON UPDATE CASCADE;
-ALTER TABLE `#__pv_officer`
+ALTER TABLE `#__pv_officers`
   ADD CONSTRAINT `fk_pv_officers_seats_id`
   FOREIGN KEY (`seat_id`) REFERENCES `#__pv_seats`(`id`)
   ON DELETE SET NULL

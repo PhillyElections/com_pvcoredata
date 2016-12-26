@@ -20,6 +20,7 @@ DROP TABLE IF EXISTS `#__pv_terms`;
 SET @tnow = NOW();
 SET @tnl  = '0000-00-00 00:00:00';
 SET @tns  = '0000-00-00';
+SET @db   = DATABASE();
 
 /* ==================== tables ==================== */
 CREATE TABLE IF NOT EXISTS `#__pv_addresses` (
@@ -224,14 +225,13 @@ CREATE TABLE IF NOT EXISTS `#__pv_terms` (
 ) ENGINE=ARIA  DEFAULT CHARSET=utf8;
 
 /* let's insert tables */
-SET @db_name=(SELECT DATABASE());
 SET @query=CONCAT(
   'INSERT INTO `#__pv_tables` ',
   '(`name`, `created`) ',
   'SELECT `table_name` as `name`, ',
   @tnow,
   ' as `created` FROM information_schema.tables WHERE table_schema=',
-  @db_name,
+  @db,
   ' AND `table_name` like "%_pv_%"'
 );
 

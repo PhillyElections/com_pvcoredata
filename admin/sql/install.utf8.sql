@@ -228,11 +228,11 @@ CREATE TABLE IF NOT EXISTS `#__pv_terms` (
 SET @query=CONCAT(
   'INSERT INTO `#__pv_tables` ',
   '(`name`, `created`) ',
-  'SELECT `table_name` as `name`, ',
+  'SELECT `table_name` as `name`, "',
   @tnow,
-  ' as `created` FROM information_schema.tables WHERE table_schema=',
+  '" as `created` FROM information_schema.tables WHERE table_schema="',
   @db,
-  ' AND `table_name` like "%_pv_%"'
+  '" AND `table_name` like "%_pv_%"'
 );
 
 PREPARE stmt FROM @query;

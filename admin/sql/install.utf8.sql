@@ -223,6 +223,18 @@ CREATE TABLE IF NOT EXISTS `#__pv_terms` (
   PRIMARY KEY (`id`)
 ) ENGINE=ARIA  DEFAULT CHARSET=utf8;
 
+/*
+
+set @db = 'mydb';
+set @tble = 'table';
+
+set @query = concat('INSERT INTO tablefoo SELECT * FROM ', @db, '.', @tble);
+PREPARE stmt FROM @query;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt
+
+*/
+
 /* let's insert tables */
 @db_name = SELECT DATABASE();
 INSERT INTO `#__pv_tables`

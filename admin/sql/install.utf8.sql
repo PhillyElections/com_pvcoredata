@@ -208,7 +208,7 @@ CREATE TABLE IF NOT EXISTS `#__pv_tables` (
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `pv_tables_unique_name` (`name`, 255)
+  UNIQUE KEY `pv_tables_unique_name` (`name`)
 ) ENGINE=ARIA DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__pv_terms` (

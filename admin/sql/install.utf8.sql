@@ -322,7 +322,7 @@ INSERT INTO `#__pv_persons`
     ORDER BY TRIM(`first_name`) ASC, TRIM(`last_name`) ASC;
 
 /* correct some specific existing names */
-UPDATE #__pv_persons SET
+UPDATE `#__pv_persons` SET
   `middle_name` = RIGHT(TRIM(`first_name`), LENGTH(TRIM(`first_name`))-3),
   `first_name` = LEFT(TRIM(`first_name`),1)
 WHERE
@@ -355,6 +355,7 @@ VALUES
   ('Office of Judge of Election', 'ward', 1, @tnow);
 
 UPDATE `#__pv_offices` set `ordering` = `id`;
+UPDATE `#__pv_offices` SET `name`='District City Council' WHERE `name`='City Council';
 
 /* ===================== pv_terms ===================== */
 INSERT INTO `#__pv_terms` 
@@ -409,8 +410,6 @@ INSERT INTO `#__pv_seats`
     1 AS `published`,
     @tnow AS `created`
     FROM `#__electedofficials` group by `id`;
-
-UPDATE `#__pv_offices` SET `name`='District City Council' WHERE `name`='City Council';
 
 /* ==================== FK relationships ==================== */
 SET FOREIGN_KEY_CHECKS=0;

@@ -410,7 +410,7 @@ INSERT INTO `#__pv_seats`
     @tnow AS `created`
     FROM `#__electedofficials` group by `id`;
 
-UPDATE `#__pv_offices` SET `name`=`District City Council` WHERE `name`='City Council';
+UPDATE `#__pv_offices` SET `name`='District City Council' WHERE `name`='City Council';
 
 /* ==================== FK relationships ==================== */
 SET FOREIGN_KEY_CHECKS=0;

@@ -351,7 +351,7 @@ VALUES
   ('Judge of the Superior Court', 'state', 1, @tnow),
   ('Justice of the Supreme Court', 'state', 1, @tnow),
   ('Member of State Committee', 'state', 1, @tnow),
-  ('Office of Judge of Election', 'ward', 1, @tnow);
+  ('Judge of Election', 'ward', 1, @tnow);
 
 UPDATE `#__pv_offices` set `ordering` = `id`;
 UPDATE `#__pv_offices` SET `name`='District City Council' WHERE `name`='City Council';

@@ -344,7 +344,7 @@ VALUES
   ('Committeeperson', 'ward', 1, @tnow),
   ('Delegate', 'state', 1, @tnow),
   ('Alternate Delegate', 'state', 1, @tnow),
-  ('Inspector of Elections', 'ward', 1, @tnow),
+  ('Inspector of Election', 'ward', 1, @tnow),
   ('Judge of the Commonwealth Court', 'state', 1, @tnow),
   ('Judge of the Court of Common Pleas', 'state', 1, @tnow),
   ('Judge of the Municipal Court', 'state', 1, @tnow),
